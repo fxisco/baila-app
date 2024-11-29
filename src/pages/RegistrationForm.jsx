@@ -22,15 +22,13 @@ export default function RegistrationForm() {
     telephone: '',
   });
 
-  const [state, setState] = useState('error');
+  const [state, setState] = useState('form');
 
   const isFormValid = form.name && form.lastName && form.birthDate;
 
   const handleSubmit = () => {
     try {
       // TODO: Send form data to server
-      throw new Error("Error al enviar datos al servidor");
-
       setState('success');
     } catch {
       setState('error');
