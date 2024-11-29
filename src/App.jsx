@@ -1,11 +1,12 @@
 import { useDisclosure } from "@mantine/hooks";
 import { AppShell, Burger, Group, Title, NavLink } from "@mantine/core";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate, Outlet } from "react-router";
 import { IconUser, IconUsersGroup, IconReceipt2, IconUserStar } from '@tabler/icons-react';
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
-  let { pathname } = useLocation()
+  let { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -32,30 +33,36 @@ function App() {
         <AppShell.Navbar p="md">
           <NavLink
             label="Estudiantes"
-            active={pathname === "/"}
+            active={pathname === "/dashboard"}
             leftSection={<IconUser />}
+            onClick={() => navigate("/dashboard")}
             fw="bolder"
           />
           <NavLink
             label="Grupos"
-            active={pathname === "/grupos"}
+            active={pathname === "/dashboard/grupos"}
             leftSection={<IconUsersGroup />}
+            onClick={() => navigate("/dashboard/grupos")}
             fw="bolder"
           />
           <NavLink
             label="Profesores"
-            active={pathname === "/profesores"}
+            active={pathname === "/dashboard/profesores"}
             leftSection={<IconUserStar />}
+            onClick={() => navigate("/dashboard/profesores")}
             fw="bolder"
           />
           <NavLink
             label="Servicios"
-            active={pathname === "/servicios"}
+            active={pathname === "/dashboard/servicios"}
+            onClick={() => navigate("/dashboard/servicios")}
             leftSection={<IconReceipt2 />}
             fw="bolder"
           />
         </AppShell.Navbar>
-        <AppShell.Main></AppShell.Main>
+        <AppShell.Main>
+          <Outlet />
+        </AppShell.Main>
       </AppShell>
     </>
   );

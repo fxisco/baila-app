@@ -7,8 +7,11 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import 'dayjs/locale/es-do.js';
 import { DatesProvider } from '@mantine/dates';
-
 import { MantineProvider, createTheme } from '@mantine/core';
+import Groups from "./pages/Groups";
+import Services from "./pages/Services";
+import Teachers from "./pages/Teachers";
+import Students from "./pages/Students";
 
 const theme = createTheme({});
 
@@ -17,7 +20,12 @@ createRoot(document.getElementById('root')).render(
     <MantineProvider theme={theme}>
       <DatesProvider settings={{ locale: 'es-do' }}>
         <Routes>
-          <Route index element={<App />} />
+          <Route path="/dashboard" element={<App />}>
+            <Route index element={<Students />} />
+            <Route path="grupos" element={<Groups />} />
+            <Route path="profesores" element={<Teachers />} />
+            <Route path="servicios" element={<Services />} />
+          </Route>
           <Route path="formulario" element={<RegistrationForm />} />
         </Routes>
       </DatesProvider>
