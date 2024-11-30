@@ -13,31 +13,35 @@ import {
 } from "@mantine/core";
 import { IconInfoCircle, IconReload } from '@tabler/icons-react';
 import { DatePickerInput } from '@mantine/dates';
+import { createStudent } from '../helpers/api';
 
 export default function RegistrationForm() {
   const [form, setForm] = useState({
     name: '',
     lastName: '',
-    birthDate: '',
+    birthdate: '',
     telephone: '',
   });
 
   const [state, setState] = useState('form');
+  const [inProgress, setInProgress] = useState(false);
 
-  const isFormValid = form.name && form.lastName && form.birthDate;
+  const isFormValid = form.name && form.lastName && form.birthdate;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setInProgress(true);
+
     try {
-      // TODO: Send form data to server
+      await createStudent(form);
       setState('success');
     } catch {
       setState('error');
-      return;
     } finally {
+      setInProgress(false);
       setForm({
         name: '',
         lastName: '',
-        birthDate: '',
+        birthdate: '',
         telephone: '',
       });
     }
@@ -89,9 +93,9 @@ export default function RegistrationForm() {
                   flex={1}
                   label="Fecha de nacimiento"
                   required
-                  value={form.birthDate ? new Date(form.birthDate) : null}
+                  value={form.birthdate ? new Date(form.birthdate) : null}
                   maxDate={new Date()}
-                  onChange={(value) => setForm({ ...form, birthDate: value.getTime() })}
+                  onChange={(value) => setForm({ ...form, birthdate: value.getTime() })}
                 />
                 <TextInput
                   flex={1}
@@ -107,7 +111,7 @@ export default function RegistrationForm() {
               </Flex>
             </Flex>
             {isFormValid && <Flex justify="center" my="sm" flex={1} align="center">
-              <Button color="green" onClick={handleSubmit}>Guardar</Button>
+              <Button loading={inProgress} color="green" onClick={handleSubmit}>Guardar</Button>
             </Flex>}
           </>}
           {state === 'success' &&

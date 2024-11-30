@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import { normalizeString } from "../helpers/strings";
 
 export const StudentsContext = createContext({
@@ -26,7 +26,6 @@ export const StudentsProvider = ({ children }) => {
       telephone: '8297636787',
     }
   ]);
-
   const [search, setSearch] = useState('');
   const filteredUsers = users.filter(
     (user) => {
