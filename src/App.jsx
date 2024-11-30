@@ -4,9 +4,15 @@ import { useLocation, useNavigate, Outlet } from "react-router";
 import { IconUser, IconUsersGroup, IconReceipt2, IconUserStar } from '@tabler/icons-react';
 
 function App() {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   let { pathname } = useLocation();
+  const rootPath = pathname.split("/")[1];
   const navigate = useNavigate();
+
+  const handleNavigation = (route) => {
+    close();
+    navigate(route);
+  }
 
   return (
     <>
@@ -27,35 +33,35 @@ function App() {
               hiddenFrom="sm"
               size="sm"
             />
-            <Title order={3}>Baila app</Title>
+            <Title order={3}>Escuela Salsa Santiago</Title>
           </Group>
         </AppShell.Header>
         <AppShell.Navbar p="md">
           <NavLink
             label="Estudiantes"
-            active={pathname === "/dashboard"}
+            active={rootPath === "estudiantes"}
             leftSection={<IconUser />}
-            onClick={() => navigate("/dashboard")}
+            onClick={() => handleNavigation("/estudiantes")}
             fw="bolder"
           />
           <NavLink
             label="Grupos"
-            active={pathname === "/dashboard/grupos"}
+            active={rootPath === "grupos"}
             leftSection={<IconUsersGroup />}
-            onClick={() => navigate("/dashboard/grupos")}
+            onClick={() => handleNavigation("/grupos")}
             fw="bolder"
           />
           <NavLink
             label="Profesores"
-            active={pathname === "/dashboard/profesores"}
+            active={rootPath === "profesores"}
             leftSection={<IconUserStar />}
-            onClick={() => navigate("/dashboard/profesores")}
+            onClick={() => handleNavigation("/profesores")}
             fw="bolder"
           />
           <NavLink
             label="Servicios"
-            active={pathname === "/dashboard/servicios"}
-            onClick={() => navigate("/dashboard/servicios")}
+            active={rootPath === "servicios"}
+            onClick={() => handleNavigation("/servicios")}
             leftSection={<IconReceipt2 />}
             fw="bolder"
           />

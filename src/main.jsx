@@ -11,6 +11,9 @@ import Groups from "./pages/Groups";
 import Services from "./pages/Services";
 import Teachers from "./pages/Teachers";
 import Students from "./pages/Students";
+import StudentPayments from "./pages/StudentPayments";
+import StudentGroups from "./pages/StudentGroups";
+import StudentAssists from "./pages/StudentAssists";
 import { StudentsProvider } from "./providers/StudentsProvider";
 
 const theme = createTheme({});
@@ -20,17 +23,21 @@ createRoot(document.getElementById('root')).render(
     <MantineProvider theme={theme}>
       <DatesProvider settings={{ locale: 'es-do' }}>
         <Routes>
-          <Route path="/dashboard" element={
+          <Route element={
               <StudentsProvider>
                 <App />
               </StudentsProvider>
             }>
-            <Route index element={<Students />} />
-            <Route path="grupos" element={<Groups />} />
             <Route path="profesores" element={<Teachers />} />
+            <Route path="grupos" element={<Groups />} />
             <Route path="servicios" element={<Services />} />
+            <Route path="estudiantes" element={<Students />} />
+            <Route path="estudiantes/:id/pagos" element={<StudentPayments />} />
+            <Route path="estudiantes/:id/grupos" element={<StudentGroups />} />
+            <Route path="estudiantes/:id/asistencias" element={<StudentAssists />} />
           </Route>
           <Route path="formulario" element={<RegistrationForm />} />
+          <Route path="formulario/:id" element={<RegistrationForm />} />
         </Routes>
       </DatesProvider>
     </MantineProvider>
