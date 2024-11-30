@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  Title,
   Flex,
   Card,
   Image,
   Text,
-  Badge,
   Button,
   Group,
   TextInput,
@@ -14,10 +12,12 @@ import {
 import { IconInfoCircle, IconReload } from '@tabler/icons-react';
 import { DatePickerInput } from '@mantine/dates';
 import { createStudent } from '../helpers/api';
+import { normalizeString } from '../helpers/strings';
+import banner from '../assets/banner.png';
 
 export default function RegistrationForm() {
   const [form, setForm] = useState({
-    name: '',
+    firstName: '',
     lastName: '',
     birthdate: '',
     telephone: '',
@@ -26,7 +26,7 @@ export default function RegistrationForm() {
   const [state, setState] = useState('form');
   const [inProgress, setInProgress] = useState(false);
 
-  const isFormValid = form.name && form.lastName && form.birthdate;
+  const isFormValid = form.firstName && form.lastName && form.birthdate;
 
   const handleSubmit = async () => {
     setInProgress(true);
@@ -39,7 +39,7 @@ export default function RegistrationForm() {
     } finally {
       setInProgress(false);
       setForm({
-        name: '',
+        firstName: '',
         lastName: '',
         birthdate: '',
         telephone: '',
@@ -51,12 +51,10 @@ export default function RegistrationForm() {
     <Flex direction="column" align="center" justify="center" mt={{ md: "xl" }}>
       <Flex maw={1080} w="100%" justify="center" align="center" direction="column">
         <Card shadow="sm" padding="lg" radius="md" withBorder w={{ base: "100%", md: "80%" }}>
-          <Card.Section component="a" href="https://mantine.dev/">
-            <Image
-              src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
-              height={160}
-              alt="Norway"
-            />
+          <Card.Section>
+            <div
+              style={{ backgroundImage: `url(${banner})`, backgroundSize: "cover", width: "100%", height: "200px" }}
+              alt="Inscríbete ahora" ></div>
           </Card.Section>
 
           <Group justify="space-between" my="md">
@@ -74,16 +72,16 @@ export default function RegistrationForm() {
                 <TextInput
                   flex={1}
                   label="Nombre"
-                  value={form.name}
+                  value={form.firstName}
                   required
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  onChange={(e) => setForm({ ...form, firstName: normalizeString(e.target.value) })}
                 />
                 <TextInput
                   flex={1}
                   label="Apellido"
                   value={form.lastName}
                   required
-                  onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                  onChange={(e) => setForm({ ...form, lastName: normalizeString(e.target.value) })}
                 />
               </Flex>
             </Flex>

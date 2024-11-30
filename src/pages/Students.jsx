@@ -1,24 +1,27 @@
-import { useContext } from "react";
-import { StudentsContext } from "../providers/StudentsProvider";
-import { Table, ActionIcon, Flex, Tooltip, Text, TextInput, Button } from "@mantine/core";
+import { useState } from "react";
+import { Table, ActionIcon, Flex, Tooltip, Text, TextInput, Button, Loader } from "@mantine/core";
 import { IconPlus, IconUsersGroup, IconReceipt2, IconCircleCheck } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { useNavigate} from "react-router";
+import { useNavigate } from "react-router";
+import { useDebouncedCallback } from '@mantine/hooks';
 import { DEFAULT_DATE_FORMAT } from "../constants";
+import { searchStudent } from '../helpers/api';
 
 function Students() {
   const navigate = useNavigate();
-  const { setSearch, filteredUsers, studentSearch } = useContext(StudentsContext);
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const rows = filteredUsers.map((element) => {
+  const rows = users.map((element) => {
     const handleNavigation = (e, route) => {
       e.stopPropagation();
       navigate(route);
     }
 
     return (
-      <Table.Tr key={element.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/formulario/${element.id}`)}>
-        <Table.Td>{element.name}</Table.Td>
+      <Table.Tr key={element._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/formulario/${element.id}`)}>
+        <Table.Td>{element.firstName}</Table.Td>
         <Table.Td>{element.lastName}</Table.Td>
         <Table.Td>{element.telephone}</Table.Td>
         <Table.Td>{dayjs(element.birthday).format(DEFAULT_DATE_FORMAT)}</Table.Td>
@@ -63,17 +66,55 @@ function Students() {
     );
   });
 
+  const handleSearch = useDebouncedCallback(async (value) => {
+    try {
+      const { data } = await searchStudent(value.trim());
+
+      setUsers(data.results);
+    } catch (error) {
+      console.log("::ERROR", error);
+    } finally {
+      setLoading(false);
+    }
+  }, 300);
+
+
+  const handleSearchInput = (e) => {
+    if (search.length === 0) {
+      setUsers([]);
+    }
+
+    const value = e.target.value;
+
+    setSearch(value);
+
+    if (value.length === 0) {
+      setUsers([]);
+      return;
+    }
+
+    setLoading(true);
+    handleSearch(e.target.value);
+  }
+
   return (
     <Flex direction="column">
-      <Flex my="md" gap="md" direction={{ base: 'column', md: 'row' }}>
+      <Flex my="md" gap="md" direction={{ base: "column", md: "row" }}>
         <TextInput
           label="Buscar por nombre"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearchInput}
           flex={1}
-          value={studentSearch}
+          value={search}
         />
         <Flex flex={1} align="end">
-          <Button onClick={() => navigate('/formulario')} variant="outline" color="blue" leftSection={<IconPlus size={14} />}>Agregar usuario</Button>
+          <Button
+            onClick={() => navigate("/formulario")}
+            variant="outline"
+            color="blue"
+            leftSection={<IconPlus size={14} />}
+          >
+            Agregar usuario
+          </Button>
         </Flex>
       </Flex>
       <Table striped highlightOnHover>
@@ -87,17 +128,25 @@ function Students() {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {filteredUsers.length > 0 ? rows :
-            (
-              <Table.Tr>
-                <Table.Td colSpan="100%" ta="center">
-                  <Text fw={700} size="sm" my="xl">
-                    Ningún estudiante encontrado
-                  </Text>
-                </Table.Td>
-              </Table.Tr>
-            )
-          }
+          {loading && (
+            <Table.Tr>
+              <Table.Td colSpan="100%" ta="center">
+                <Flex justify="center" w="100%">
+                  <Loader color="blue" type="bars" />
+                </Flex>
+              </Table.Td>
+            </Table.Tr>
+          )}
+          {search.length > 0 && users.length > 0 && rows}
+          {(search.length === 0 || users.length === 0) && !loading && (
+            <Table.Tr>
+              <Table.Td colSpan="100%" ta="center">
+                <Text fw={700} size="sm" my="xl">
+                  Ningún estudiante encontrado
+                </Text>
+              </Table.Td>
+            </Table.Tr>
+          )}
         </Table.Tbody>
       </Table>
     </Flex>
