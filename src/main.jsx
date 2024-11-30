@@ -1,6 +1,5 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from "react-router";
-import './index.css'
 import App from './App.jsx'
 import RegistrationForm from './pages/RegistrationForm.jsx'
 import '@mantine/core/styles.css';
@@ -12,6 +11,7 @@ import Groups from "./pages/Groups";
 import Services from "./pages/Services";
 import Teachers from "./pages/Teachers";
 import Students from "./pages/Students";
+import { StudentsProvider } from "./providers/StudentsProvider";
 
 const theme = createTheme({});
 
@@ -20,7 +20,11 @@ createRoot(document.getElementById('root')).render(
     <MantineProvider theme={theme}>
       <DatesProvider settings={{ locale: 'es-do' }}>
         <Routes>
-          <Route path="/dashboard" element={<App />}>
+          <Route path="/dashboard" element={
+              <StudentsProvider>
+                <App />
+              </StudentsProvider>
+            }>
             <Route index element={<Students />} />
             <Route path="grupos" element={<Groups />} />
             <Route path="profesores" element={<Teachers />} />
