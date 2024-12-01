@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
     "@mantine/core": "^7.14.3",
     "@mantine/dates": "^7.14.3",
     "@mantine/form": "^7.14.3",
     "@mantine/hooks": "^7.14.3",
     "@mantine/notifications": "^7.14.3",
+    "@mui/material": "^6.1.9",
+    "@mui/x-date-pickers": "^7.23.0",
     "@tabler/icons-react": "^3.23.0",
     "axios": "^1.7.8",
     "dayjs": "^1.11.13",

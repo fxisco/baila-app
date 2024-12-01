@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
+import dayjs from 'dayjs';
 import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title } from "@mantine/core";
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePickerInput } from "@mantine/dates";
 import { normalizeString } from "../helpers/strings";
 import { DAYS } from "../constants";
@@ -21,8 +23,9 @@ function GroupView() {
   const [originalGroup, setOriginalGroup] = useState(null);
   const isDirty = JSON.stringify(group) !== JSON.stringify(originalGroup);
   const formattedTeachers = teachers.map((teacher) => ({ value: teacher.id, label: `${teacher.firstName} ${teacher.lastName}` }))
-  const isFormValid = group?.name && group?.teachers?.length > 0;
-  const schedules = group?.schedules || [];
+  const hasSchedules = group?.schedules && Object.keys(group.schedules).length > 0;
+  const allSchedulesFilled = Object.values(group?.schedules || {}).every(({ start, end }) => start && end);
+  const isFormValid = group?.name && group?.teachers?.length > 0 && allSchedulesFilled && hasSchedules;
 
   useEffect(() => {
     if (!id) setLoading(false);
@@ -47,6 +50,8 @@ function GroupView() {
   //     setLoadingUpdate(false);
   //   }
   }
+
+  console.log("::TEST", )
 
   const handleScheduleChange = (value) => {
     if (group?.schedules[value]) {
@@ -126,34 +131,28 @@ function GroupView() {
           </Flex>
           <Flex justify="space-between" my="sm" w="100%" direction="column" gap="md">
             {Object.entries(group?.schedules || {}).map(([id, schedule]) => (
-              <Flex key={id} flex={1} gap="md" direction="column" mx="md">
+              <Flex key={id} flex={1} gap="md" direction="column">
                 <Title order={4}>{DAYS[id]}</Title>
                 <Flex key={id} flex={1} gap="md">
-                  <DatePickerInput
-                    flex={1}
-                    label="Hora de inicio"
-                    required
-                    value={schedule.start ? new Date(schedule.start) : null}
-                    maxDate={new Date()}
+                  <TimePicker
+                    value={schedule.start ? dayjs(schedule.start) : null}
+                    label="Hora inicio"
                     onChange={(value) => setGroup({ ...group, schedules: {
                       ...group.schedules,
                       [id]: {
                         ...group.schedules[id],
-                        start: value.getTime()
+                        start: value.$d.getTime()
                       }
                     } })}
                   />
-                  <DatePickerInput
-                    flex={1}
-                    label="Hora de fin"
-                    required
-                    value={schedule.end ? new Date(schedule.end) : null}
-                    maxDate={new Date()}
+                  <TimePicker
+                    label="Hora fin"
+                    value={schedule.end ? dayjs(schedule.end) : null}
                     onChange={(value) => setGroup({ ...group, schedules: {
                       ...group.schedules,
                       [id]: {
                         ...group.schedules[id],
-                        end: value.getTime()
+                        end: value.$d.getTime()
                       }
                     } })}
                   />
@@ -162,7 +161,7 @@ function GroupView() {
             ))}
           </Flex>
           {isFormValid && isDirty && <Flex justify="center" my="sm" flex={1} align="center">
-            <Button color="green" loading={loadingUpdate} disabled={loadingUpdate} onClick={handleUpdate}>Actualizar</Button>
+            <Button color="green" loading={loadingUpdate} disabled={loadingUpdate} onClick={handleUpdate}>{id ? 'Actualizar': 'Guardar'}</Button>
           </Flex>}
         </Flex>
       </Flex>

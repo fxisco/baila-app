@@ -1,12 +1,12 @@
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
-import App from './App.jsx'
-import RegistrationForm from './pages/RegistrationForm.jsx'
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import 'dayjs/locale/es-do.js';
-import { DatesProvider } from '@mantine/dates';
-import { MantineProvider, createTheme } from '@mantine/core';
+import App from "./App.jsx";
+import RegistrationForm from "./pages/RegistrationForm.jsx";
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+import "dayjs/locale/es-do.js";
+import { DatesProvider } from "@mantine/dates";
+import { MantineProvider, createTheme } from "@mantine/core";
 import Groups from "./pages/Groups";
 import Services from "./pages/Services";
 import Teachers from "./pages/Teachers";
@@ -17,36 +17,51 @@ import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
 import GroupView from "./pages/GroupView";
 import { StudentsProvider } from "./providers/StudentsProvider";
-import { Notifications } from '@mantine/notifications';
-import '@mantine/notifications/styles.css';
+import { Notifications } from "@mantine/notifications";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "@mantine/notifications/styles.css";
 
 const theme = createTheme({});
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <MantineProvider theme={theme}>
-      <Notifications />
-      <DatesProvider settings={{ locale: 'es-do' }}>
-        <Routes>
-          <Route element={
-              <StudentsProvider>
-                <App />
-              </StudentsProvider>
-            }>
-            <Route path="profesores" element={<Teachers />} />
-            <Route path="grupos" element={<Groups />} />
-            <Route path="servicios" element={<Services />} />
-            <Route path="estudiantes" element={<Students />} />
-            <Route path="estudiantes/:id/pagos" element={<StudentPayments />} />
-            <Route path="estudiantes/:id/grupos" element={<StudentGroups />} />
-            <Route path="estudiantes/:id/asistencias" element={<StudentAssists />} />
-            <Route path="estudiantes/:id" element={<StudentView />} />
-            <Route path="grupo/:id?" element={<GroupView />} />
-          </Route>
-          <Route path="formulario" element={<RegistrationForm />} />
-          <Route path="formulario/:id" element={<RegistrationForm />} />
-        </Routes>
-      </DatesProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Notifications />
+        <DatesProvider settings={{ locale: "es-do" }}>
+          <Routes>
+            <Route
+              element={
+                <StudentsProvider>
+                  <App />
+                </StudentsProvider>
+              }
+            >
+              <Route path="profesores" element={<Teachers />} />
+              <Route path="grupos" element={<Groups />} />
+              <Route path="servicios" element={<Services />} />
+              <Route path="estudiantes" element={<Students />} />
+              <Route
+                path="estudiantes/:id/pagos"
+                element={<StudentPayments />}
+              />
+              <Route
+                path="estudiantes/:id/grupos"
+                element={<StudentGroups />}
+              />
+              <Route
+                path="estudiantes/:id/asistencias"
+                element={<StudentAssists />}
+              />
+              <Route path="estudiantes/:id" element={<StudentView />} />
+              <Route path="grupo/:id?" element={<GroupView />} />
+            </Route>
+            <Route path="formulario" element={<RegistrationForm />} />
+            <Route path="formulario/:id" element={<RegistrationForm />} />
+          </Routes>
+        </DatesProvider>
+      </LocalizationProvider>
     </MantineProvider>
   </BrowserRouter>
-)
+);
