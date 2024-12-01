@@ -1,11 +1,7 @@
 import { useState } from "react";
-import { Table, ActionIcon, Flex, Tooltip, Text, TextInput, Button, Loader } from "@mantine/core";
-import { IconPlus, IconReceipt2, IconCircleCheck } from "@tabler/icons-react";
-import dayjs from "dayjs";
+import { Table, Flex, Button, Loader } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
-import { useDebouncedCallback } from '@mantine/hooks';
-import { DEFAULT_DATE_FORMAT } from "../constants";
-import { searchStudent } from '../helpers/api';
 
 function Groups() {
   const navigate = useNavigate();
@@ -28,7 +24,7 @@ function Groups() {
       <Flex my="md" gap="md" direction={{ base: "column", md: "row" }}>
         <Flex flex={1} align="end">
           <Button
-            onClick={() => navigate("/formulario-grupo")}
+            onClick={() => navigate("/grupo")}
             variant="outline"
             color="blue"
             leftSection={<IconPlus size={14} />}
