@@ -1,19 +1,67 @@
-import { useState } from "react";
-import { Table, Flex, Button, Loader } from "@mantine/core";
+import { useState, useEffect } from "react";
+import { Table, Flex, Button, Loader, List, Badge } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
+import { getGroups } from "../helpers/api";
+import { getErrorMessage } from "../helpers/strings";
+import { DAYS, DEFAULT_TIME_FORMAT } from "../constants";
+import dayjs from 'dayjs';
 
 function Groups() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchGroups = async () => {
+      try {
+        const { data } = await getGroups();
+        const { result, error } = data;
+
+        if (error) {
+          notifications.show(getErrorMessage("Error cargando grupos. Por favor refresque la página."));
+          return;
+        }
+
+        setGroups(result);
+      } catch {
+        notifications.show(getErrorMessage("Error cargando grupos. Por favor refresque la página."));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGroups();
+  }, []);
+
   const rows = groups.map((element) => {
     return (
-      <Table.Tr key={element._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/grupo/${element._id}`)}>
-        <Table.Td>{groups.name}</Table.Td>
-        <Table.Td></Table.Td>
-        <Table.Td></Table.Td>
+      <Table.Tr
+        key={element._id}
+        style={{ cursor: "pointer" }}
+        onClick={() => navigate(`/grupo/${element._id}`)}
+      >
+        <Table.Td>{element.name}</Table.Td>
+        <Table.Td>
+          <List spacing="xs" size="sm" center>
+            {Object.entries(element?.schedules || {}).map(([id, schedule]) => (
+              <List.Item key={id}>
+                {DAYS[id]}: {dayjs(schedule.start).format(DEFAULT_TIME_FORMAT)} -{" "}
+                {dayjs(schedule.end).format(DEFAULT_TIME_FORMAT)}
+              </List.Item>
+            ))}
+          </List>
+        </Table.Td>
+        <Table.Td>
+          <Flex gap="xs" direction="column">
+            {element.teachers.map((teacher) => (
+              <Badge key={`${element._id}-${teacher}`} variant="light">{teacher}</Badge>
+            ))}
+          </Flex>
+        </Table.Td>
         <Table.Td></Table.Td>
       </Table.Tr>
     );

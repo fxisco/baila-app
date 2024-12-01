@@ -17,3 +17,19 @@ export const fetchStudent = async (id) => {
 export const updateStudent = async (id, update) => {
   return axios.put(BASE_URL + `estudiantes/${id}`, update);
 }
+
+export const createGroup = async (grupo) => {
+  return axios.put(BASE_URL + `grupos`, grupo);
+}
+
+export const updateGroup = async (id, update) => {
+  return axios.put(BASE_URL + `grupos/${id}`, update);
+}
+
+export const getGroups = async () => {
+  return axios.get(BASE_URL + `grupos`);
+}
+
+export const fetchGroup = async (id) => {
+  return axios.get(BASE_URL + `grupos/${id}`);
+}

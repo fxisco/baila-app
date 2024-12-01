@@ -26,9 +26,7 @@ function StudentView() {
         setOriginalUser(fetchedUser);
         setUser(fetchedUser);
       } catch (error) {
-        // TODO: Handle error
         notifications.show(getErrorMessage("Error al cargar el estudiante. Refresque la página."))
-        console.error(error);
       } finally {
         setLoading(false);
       }

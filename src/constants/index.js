@@ -1,4 +1,5 @@
 export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
+export const DEFAULT_TIME_FORMAT = 'HH:mmA';
 export const DAYS = {
   0: 'Lunes',
   1: 'Martes',
