@@ -9,3 +9,11 @@ export const createStudent = async (data) => {
 export const searchStudent = async (search) => {
   return axios.post(BASE_URL + `estudiantes/search`, { q: search });
 }
+
+export const fetchStudent = async (id) => {
+  return axios.get(BASE_URL + `estudiantes/${id}`);
+}
+
+export const updateStudent = async (id, update) => {
+  return axios.put(BASE_URL + `estudiantes/${id}`, update);
+}

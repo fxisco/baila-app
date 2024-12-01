@@ -14,13 +14,17 @@ import Students from "./pages/Students";
 import StudentPayments from "./pages/StudentPayments";
 import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
+import StudentView from "./pages/StudentView";
 import { StudentsProvider } from "./providers/StudentsProvider";
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 const theme = createTheme({});
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <MantineProvider theme={theme}>
+      <Notifications />
       <DatesProvider settings={{ locale: 'es-do' }}>
         <Routes>
           <Route element={
@@ -35,6 +39,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="estudiantes/:id/pagos" element={<StudentPayments />} />
             <Route path="estudiantes/:id/grupos" element={<StudentGroups />} />
             <Route path="estudiantes/:id/asistencias" element={<StudentAssists />} />
+            <Route path="estudiantes/:id" element={<StudentView />} />
           </Route>
           <Route path="formulario" element={<RegistrationForm />} />
           <Route path="formulario/:id" element={<RegistrationForm />} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Table, ActionIcon, Flex, Tooltip, Text, TextInput, Button, Loader } from "@mantine/core";
-import { IconPlus, IconUsersGroup, IconReceipt2, IconCircleCheck } from "@tabler/icons-react";
+import { IconPlus, IconReceipt2, IconCircleCheck } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router";
 import { useDebouncedCallback } from '@mantine/hooks';
@@ -20,24 +20,13 @@ function Students() {
     }
 
     return (
-      <Table.Tr key={element._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/formulario/${element.id}`)}>
+      <Table.Tr key={element._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/estudiantes/${element._id}`)}>
         <Table.Td>{element.firstName}</Table.Td>
         <Table.Td>{element.lastName}</Table.Td>
         <Table.Td>{element.telephone}</Table.Td>
         <Table.Td>{dayjs(element.birthday).format(DEFAULT_DATE_FORMAT)}</Table.Td>
         <Table.Td>
           <Flex gap={"sm"}>
-            <Tooltip label="Grupos" position="left">
-              <ActionIcon
-                variant="subtle"
-                title="Editar"
-                color="blue"
-                radius="xl"
-                onClick={(e) => handleNavigation(e, `/estudiantes/${element.id}/grupos`)}
-              >
-                <IconUsersGroup />
-              </ActionIcon>
-            </Tooltip>
             <Tooltip label="Pagos" position="left">
               <ActionIcon
                 variant="subtle"
@@ -121,7 +110,7 @@ function Students() {
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Nombre</Table.Th>
-            <Table.Th>Apellido</Table.Th>
+            <Table.Th>Apellidos</Table.Th>
             <Table.Th>Telefono</Table.Th>
             <Table.Th>Fecha de nacimiento</Table.Th>
             <Table.Th>Acciones</Table.Th>

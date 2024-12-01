@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Flex,
   Card,
-  Image,
   Text,
   Button,
   Group,
@@ -14,7 +13,6 @@ import { DatePickerInput } from '@mantine/dates';
 import { createStudent } from '../helpers/api';
 import { normalizeString } from '../helpers/strings';
 import banner from '../assets/banner.png';
-import { useMediaQuery } from '@mantine/hooks';
 
 export default function RegistrationForm() {
   const [form, setForm] = useState({
@@ -26,8 +24,6 @@ export default function RegistrationForm() {
 
   const [state, setState] = useState('form');
   const [inProgress, setInProgress] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 319px)');
-  const isTablet = useMediaQuery('(max-width: 767px)');
 
   const isFormValid = form.firstName && form.lastName && form.birthdate;
 
@@ -56,7 +52,7 @@ export default function RegistrationForm() {
         <Card shadow="sm" padding="lg" radius="md" withBorder w={{ base: "100%", md: "80%" }}>
           <Card.Section>
             <div
-              style={{ backgroundImage: `url(${banner})`, backgroundSize: "cover", width: "100%", height: isMobile ? 82 : isTablet ? 120 : 195 }}
+              style={{ backgroundImage: `url(${banner})`, backgroundSize: "cover", width: "100%", height: "200px" }}
               alt="Inscríbete ahora" ></div>
           </Card.Section>
 
@@ -81,7 +77,7 @@ export default function RegistrationForm() {
                 />
                 <TextInput
                   flex={1}
-                  label="Apellido"
+                  label="Apellidos"
                   value={form.lastName}
                   required
                   onChange={(e) => setForm({ ...form, lastName: normalizeString(e.target.value) })}
