@@ -6,13 +6,16 @@ import {
   Button,
   Group,
   TextInput,
-  Alert
+  Alert,
+  Image
 } from "@mantine/core";
 import { IconInfoCircle, IconReload } from '@tabler/icons-react';
 import { DatePickerInput } from '@mantine/dates';
 import { createStudent } from '../helpers/api';
 import { normalizeString } from '../helpers/strings';
-import banner from '../assets/banner.png';
+import bannerXL from '../assets/banner-xl.png';
+import bannerXS from '../assets/banner-xs.png';
+import bannerMD from '../assets/banner-md.png';
 
 export default function RegistrationForm() {
   const [form, setForm] = useState({
@@ -51,9 +54,11 @@ export default function RegistrationForm() {
       <Flex maw={1080} w="100%" justify="center" align="center" direction="column">
         <Card shadow="sm" padding="lg" radius="md" withBorder w={{ base: "100%", md: "80%" }}>
           <Card.Section>
-            <div
-              style={{ backgroundImage: `url(${banner})`, backgroundSize: "cover", width: "100%", height: "200px" }}
-              alt="Inscríbete ahora" ></div>
+            <picture>
+              <source media="(min-width:768px)" srcSet={bannerMD}/>
+              <source media="(min-width:320px)" srcSet={bannerXS} />
+              <img style={{ width: '100%' }} src={bannerXL} alt="Flowers" />
+            </picture>
           </Card.Section>
 
           <Group justify="space-between" my="md">
