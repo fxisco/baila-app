@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Flex, TextInput, Skeleton, Button } from "@mantine/core";
+import { Flex, TextInput, Skeleton, Button, MultiSelect } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { normalizeString } from "../helpers/strings";
-import { fetchStudent, updateStudent } from "../helpers/api";
+import { fetchStudent, updateStudent, getGroups } from "../helpers/api";
 import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
 
 function StudentView() {
   const { id } = useParams();
-  const [user, setUser] = useState(null);
+  const [student, setStudent] = useState(null);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingGroups, setLoadingGroups] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [originalUser, setOriginalUser] = useState(null);
-  const isDirty = JSON.stringify(user) !== JSON.stringify(originalUser);
-  const isFormValid = user?.firstName && user?.lastName && user?.birthdate;
+  const [originalStudent, setOriginalStudent] = useState(null);
+  const isDirty = JSON.stringify(student) !== JSON.stringify(originalStudent);
+  const activeStudentGroups = (student?.groups || []).filter((group) => groups.find(({ _id }) => _id === group));
+  const inactiveStudentGroups = (student?.groups || []).filter((group) => !groups.find(({ _id }) => _id === group));
+  const isFormValid = student?.firstName && student?.lastName && student?.birthdate;
 
   useEffect(() => {
     const fetchStudentById = async (studentId) => {
@@ -23,28 +27,47 @@ function StudentView() {
         const { result, error } = data;
         const fetchedUser = error ? null : result;
 
-        setOriginalUser(fetchedUser);
-        setUser(fetchedUser);
-      } catch (error) {
+        setOriginalStudent(fetchedUser);
+        setStudent(fetchedUser);
+      } catch {
         notifications.show(getErrorMessage("Error al cargar el estudiante. Refresque la página."))
       } finally {
         setLoading(false);
       }
     };
 
+    const fetchGroups = async () => {
+      try {
+        const { data } = await getGroups({ active: true });
+        const { result, error } = data;
+
+        if (error) {
+          notifications.show(getErrorMessage("Error cargando grupos. Por favor refresque la página."));
+          return;
+        }
+
+        setGroups(result);
+      } catch {
+        notifications.show(getErrorMessage("Error cargando grupos. Por favor refresque la página."));
+      } finally {
+        setLoadingGroups(false);
+      }
+    }
+
     fetchStudentById(id);
+    fetchGroups();
   }, []);
 
   const handleUpdate = async () => {
     setLoadingUpdate(true);
     try {
-      const { data } = await updateStudent(id, user);
+      const { data } = await updateStudent(id, student);
       const { error } = data;
 
       if (error) {
         notifications.show(getErrorMessage("Error al actualizr el estudiante. Por favor intente de nuevo."))
       } else {
-        setOriginalUser(user);
+        setOriginalStudent(student);
         notifications.show(getSuccessMessage("Estudiante actualizado correctamente."));
       }
     } catch {
@@ -74,11 +97,11 @@ function StudentView() {
               <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Nombre"
-                  value={user?.firstName}
+                  value={student?.firstName}
                   required
                   onChange={(e) =>
-                    setUser({
-                      ...user,
+                    setStudent({
+                      ...student,
                       firstName: normalizeString(e.target.value),
                     })
                   }
@@ -87,11 +110,11 @@ function StudentView() {
               <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Apellidos"
-                  value={user?.lastName}
+                  value={student?.lastName}
                   required
                   onChange={(e) =>
-                    setUser({
-                      ...user,
+                    setStudent({
+                      ...student,
                       lastName: normalizeString(e.target.value),
                     })
                   }
@@ -105,25 +128,54 @@ function StudentView() {
                 <DatePickerInput
                   label="Fecha de nacimiento"
                   required
-                  value={user?.birthdate ? new Date(user?.birthdate) : null}
+                  value={student?.birthdate ? new Date(student?.birthdate) : null}
                   maxDate={new Date()}
                   onChange={(value) =>
-                    setUser({ ...user, birthdate: value.getTime() })
+                    setStudent({ ...student, birthdate: value.getTime() })
                   }
                 />
               </Skeleton>
               <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Whatsapp"
-                  value={user?.telephone}
+                  value={student?.telephone}
                   onChange={(e) =>
-                    setUser({
-                      ...user,
+                    setStudent({
+                      ...student,
                       telephone: e.target.value.replace(/[^0-9\-]/g, ""),
                     })
                   }
                 />
               </Skeleton>
+            </Flex>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
+            <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
+              <Skeleton visible={loadingGroups} flex={1}>
+                <MultiSelect
+                  label="Grupos activos"
+                  placeholder="Escoger grupo"
+                  data={(groups || []).map((group) => ({ value: group._id, label: group.name }))}
+                  clearable
+                  value={activeStudentGroups || []}
+                  onChange={(value) =>
+                    setStudent({
+                      ...student,
+                      groups: [
+                        ...value,
+                        ...inactiveStudentGroups
+                      ],
+                    })
+                  }
+                  styles={{
+                    pill: {
+                      background: 'var(--mantine-color-blue-filled)',
+                      color: 'white',
+                    },
+                  }}
+                />
+              </Skeleton>
+              <Flex flex={1}></Flex>
             </Flex>
           </Flex>
           {isFormValid && isDirty && <Flex justify="center" my="sm" flex={1} align="center">

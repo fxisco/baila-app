@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import dayjs from 'dayjs';
-import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title } from "@mantine/core";
+import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title, Switch } from "@mantine/core";
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
@@ -123,6 +123,24 @@ function GroupView() {
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Skeleton visible={loading} flex={1}>
+                <Switch
+                  checked={group?.active}
+                  size="xl"
+                  label={group?.active ? "Activado" : "Desactivado"}
+                  onChange={(e) => {
+                    setGroup({
+                      ...group,
+                      active: e.currentTarget.checked,
+                    })
+                  }}
+                />
+              </Skeleton>
+              <Flex flex={1}></Flex>
+            </Flex>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
+            <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
+              <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Nombre de grupo"
                   value={group?.name}
@@ -146,7 +164,7 @@ function GroupView() {
                       teachers: value,
                     })
                   }
-                  value={(group?.teachers || [])}
+                  value={group?.teachers || []}
                 />
               </Skeleton>
             </Flex>
@@ -246,7 +264,7 @@ function GroupView() {
                 color="green"
                 loading={loadingUpdate}
                 disabled={loadingUpdate}
-                onClick={id ? handleUpdate: handleCreation}
+                onClick={id ? handleUpdate : handleCreation}
               >
                 {id ? "Actualizar" : "Guardar"}
               </Button>

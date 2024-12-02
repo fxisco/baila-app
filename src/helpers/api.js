@@ -26,8 +26,8 @@ export const updateGroup = async (id, update) => {
   return axios.put(BASE_URL + `grupos/${id}`, update);
 }
 
-export const getGroups = async () => {
-  return axios.get(BASE_URL + `grupos`);
+export const getGroups = async (payload) => {
+  return axios.post(BASE_URL + `grupos`, payload);
 }
 
 export const fetchGroup = async (id) => {

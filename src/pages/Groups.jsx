@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Flex, Button, Loader, List, Badge } from "@mantine/core";
+import { Table, Flex, Button, Loader, List, Badge, SegmentedControl } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
@@ -11,14 +11,16 @@ import dayjs from 'dayjs';
 function Groups() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
+  const [groupsType, setGroupsType] = useState('Activos');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    setGroups([]);
 
     const fetchGroups = async () => {
       try {
-        const { data } = await getGroups();
+        const { data } = await getGroups({ active: groupsType === 'Activos' });
         const { result, error } = data;
 
         if (error) {
@@ -35,7 +37,7 @@ function Groups() {
     }
 
     fetchGroups();
-  }, []);
+  }, [groupsType]);
 
   const rows = groups.map((element) => {
     return (
@@ -79,6 +81,16 @@ function Groups() {
           >
             Agregar grupo
           </Button>
+        </Flex>
+        <Flex flex={1}></Flex>
+      </Flex>
+      <Flex my="md" gap="md" direction={{ base: "column", md: "row" }}>
+        <Flex flex={1} align="end">
+        <SegmentedControl
+          value={groupsType}
+          onChange={setGroupsType}
+          data={['Activos', 'Desactivados']}
+        />
         </Flex>
         <Flex flex={1}></Flex>
       </Flex>
