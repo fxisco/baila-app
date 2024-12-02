@@ -15,8 +15,7 @@ function GroupView() {
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
   const [teachers, setTeachers] = useState(['1', '2', '3', '4', '5']);
-  const [loading, setLoading] = useState(true);
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [originalGroup, setOriginalGroup] = useState(null);
   const isDirty = JSON.stringify(group) !== JSON.stringify(originalGroup);
   const formattedTeachers = teachers
@@ -49,7 +48,7 @@ function GroupView() {
   }, []);
 
   const handleCreation = async () => {
-    setLoadingUpdate(true);
+    setLoading(true);
 
     try {
       const { data } = await createGroup(group);
@@ -65,12 +64,12 @@ function GroupView() {
     } catch {
       notifications.show(getErrorMessage("Error al crear el grupo. Por favor intente de nuevo."))
     } finally {
-      setLoadingUpdate(false);
+      setLoading(false);
     }
   }
 
   const handleUpdate = async () => {
-    setLoadingUpdate(true);
+    setLoading(true);
 
     try {
       const { data } = await updateGroup(id, group);
@@ -85,7 +84,7 @@ function GroupView() {
     } catch {
       notifications.show(getErrorMessage("Error al actualizar el grupo. Por favor intente de nuevo."))
     } finally {
-      setLoadingUpdate(false);
+      setLoading(false);
     }
   }
 
@@ -122,7 +121,7 @@ function GroupView() {
         >
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !group} flex={1}>
                 <Switch
                   checked={group?.active}
                   size="xl"
@@ -140,7 +139,7 @@ function GroupView() {
           </Flex>
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !group} flex={1}>
                 <TextInput
                   label="Nombre de grupo"
                   value={group?.name}
@@ -153,7 +152,7 @@ function GroupView() {
                   }
                 />
               </Skeleton>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !group} flex={1}>
                 <MultiSelect
                   required
                   data={formattedTeachers}
@@ -170,7 +169,7 @@ function GroupView() {
             </Flex>
           </Flex>
           <Flex justify="space-between" my="sm" w="100%" direction="column">
-            <Skeleton visible={loading} flex={1}>
+            <Skeleton visible={loading && !group} flex={1}>
               <Title order={4}>Días de la semana</Title>
               <Group mt="xs">
                 <Checkbox
@@ -262,8 +261,8 @@ function GroupView() {
             <Flex justify="center" my="sm" flex={1} align="center">
               <Button
                 color="green"
-                loading={loadingUpdate}
-                disabled={loadingUpdate}
+                loading={loading}
+                disabled={loading}
                 onClick={id ? handleUpdate : handleCreation}
               >
                 {id ? "Actualizar" : "Guardar"}

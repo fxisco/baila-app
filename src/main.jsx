@@ -15,6 +15,7 @@ import StudentPayments from "./pages/StudentPayments";
 import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
+import ServiceView from "./pages/ServiceView";
 import GroupView from "./pages/GroupView";
 import { StudentsProvider } from "./providers/StudentsProvider";
 import { Notifications } from "@mantine/notifications";
@@ -55,6 +56,7 @@ createRoot(document.getElementById("root")).render(
                 element={<StudentAssists />}
               />
               <Route path="estudiantes/:id" element={<StudentView />} />
+              <Route path="servicio/:id?" element={<ServiceView />} />
               <Route path="grupo/:id?" element={<GroupView />} />
             </Route>
             <Route path="formulario" element={<RegistrationForm />} />

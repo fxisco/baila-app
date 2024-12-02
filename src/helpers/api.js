@@ -26,10 +26,27 @@ export const updateGroup = async (id, update) => {
   return axios.put(BASE_URL + `grupos/${id}`, update);
 }
 
+export const updateService = async (id, update) => {
+  return axios.put(BASE_URL + `servicios/${id}`, update);
+}
+
+
 export const getGroups = async (payload) => {
   return axios.post(BASE_URL + `grupos`, payload);
 }
 
 export const fetchGroup = async (id) => {
   return axios.get(BASE_URL + `grupos/${id}`);
+}
+
+export const fetchService = async (id) => {
+  return axios.get(BASE_URL + `servicios/${id}`);
+}
+
+export const createService = async (grupo) => {
+  return axios.put(BASE_URL + `servicios`, grupo);
+}
+
+export const getServices = async () => {
+  return axios.post(BASE_URL + `servicios`);
 }
