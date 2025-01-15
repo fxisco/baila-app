@@ -50,13 +50,13 @@ function Services() {
       >
         <Table.Td>{element.name}</Table.Td>
         <Table.Td>
-          <Tooltip label="Pagos" position="left">
+          <Tooltip label="Registrar pago" position="left">
             <ActionIcon
               variant="subtle"
-              title="Pagos"
+              title="Registrar pago"
               color="green"
               radius="xl"
-              onClick={(e) => handleNavigation(e, `/servicos/${element.id}/pagos`)}
+              onClick={(e) => handleNavigation(e, `/servicios/${element._id}/pagos`)}
             >
               <IconReceipt2 />
             </ActionIcon>

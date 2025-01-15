@@ -12,9 +12,11 @@ import Services from "./pages/Services";
 import Teachers from "./pages/Teachers";
 import Students from "./pages/Students";
 import StudentPayments from "./pages/StudentPayments";
+import ServicesPayment from "./pages/ServicesPayment.jsx";
 import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
+import TeacherView from "./pages/TeacherView";
 import ServiceView from "./pages/ServiceView";
 import GroupView from "./pages/GroupView";
 import { StudentsProvider } from "./providers/StudentsProvider";
@@ -48,6 +50,10 @@ createRoot(document.getElementById("root")).render(
                 element={<StudentPayments />}
               />
               <Route
+                path="servicios/:id/pagos"
+                element={<ServicesPayment />}
+              />
+              <Route
                 path="estudiantes/:id/grupos"
                 element={<StudentGroups />}
               />
@@ -58,6 +64,7 @@ createRoot(document.getElementById("root")).render(
               <Route path="estudiantes/:id" element={<StudentView />} />
               <Route path="servicio/:id?" element={<ServiceView />} />
               <Route path="grupo/:id?" element={<GroupView />} />
+              <Route path="profesor/:id?" element={<TeacherView />} />
             </Route>
             <Route path="formulario" element={<RegistrationForm />} />
             <Route path="formulario/:id" element={<RegistrationForm />} />
