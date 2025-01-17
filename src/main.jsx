@@ -20,6 +20,7 @@ import TeacherView from "./pages/TeacherView";
 import ServiceView from "./pages/ServiceView";
 import GroupView from "./pages/GroupView";
 import { StudentsProvider } from "./providers/StudentsProvider";
+import { ConfirmationProvider } from "./providers/ConfirmationProvider.jsx";
 import { Notifications } from "@mantine/notifications";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -36,9 +37,11 @@ createRoot(document.getElementById("root")).render(
           <Routes>
             <Route
               element={
-                <StudentsProvider>
-                  <App />
-                </StudentsProvider>
+                <ConfirmationProvider>
+                  <StudentsProvider>
+                    <App />
+                  </StudentsProvider>
+                </ConfirmationProvider>
               }
             >
               <Route path="profesores" element={<Teachers />} />
@@ -50,7 +53,7 @@ createRoot(document.getElementById("root")).render(
                 element={<StudentPayments />}
               />
               <Route
-                path="servicios/:id/pagos"
+                path="servicios/:id/pagos/:paymentId?"
                 element={<ServicesPayment />}
               />
               <Route

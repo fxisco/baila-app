@@ -6,17 +6,55 @@ import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { DatePickerInput } from '@mantine/dates';
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
-import { createServicePayment } from "../helpers/api";
+import { createServicePayment, fetchPayment, updatePayment, fetchService } from "../helpers/api";
 
 function ServicesPayment() {
   const { id, paymentId } = useParams();
   const [payment, setPayment] = useState(null);
+  const [service, setService] = useState(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [originalPayment, setOriginalPayment] = useState(null);
   const isDirty = JSON.stringify(payment) !== JSON.stringify(originalPayment);
   const isFormValid = payment?.description && payment?.date && payment?.amount;
+
+  useEffect(() => {
+    const fetchServiceById = async (serviceId) => {
+      try {
+        const { data } = await fetchService(serviceId);
+        const { service: serviceData, error } = data;
+        const fetchedService = error ? null : serviceData;
+
+        setService(fetchedService);
+      } catch {
+        notifications.show(getErrorMessage("Error al cargar el pago de servicio. Refresque la página."))
+      }
+    };
+
+    fetchServiceById(id)
+
+    if (!paymentId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchItem = async (paymentId) => {
+      try {
+        const { data } = await fetchPayment(paymentId);
+        const { result: paymentData, error } = data;
+        const fetchedPayment = error ? null : paymentData;
+
+        setOriginalPayment(fetchedPayment);
+        setPayment(fetchedPayment);
+      } catch {
+        notifications.show(getErrorMessage("Error al cargar el pago de servicio. Refresque la página."))
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItem(paymentId);
+  }, [])
 
   const handleCreation = async () => {
     setLoading(true);
@@ -30,7 +68,7 @@ function ServicesPayment() {
       } else {
         setOriginalPayment(payment);
         notifications.show(getSuccessMessage("Pago de servicio creado correctamente."));
-        navigate('/servicios');
+        navigate(`/servicio/${id}`);
       }
     } catch {
       notifications.show(getErrorMessage("Error al crear pago de servicio. Por favor intente de nuevo."))
@@ -39,7 +77,25 @@ function ServicesPayment() {
     }
   }
 
-  const handleUpdate = async () => {}
+  const handleUpdate = async () => {
+    setLoading(true);
+
+    try {
+      const { data } = await updatePayment(paymentId, payment);
+      const { error } = data;
+
+      if (error) {
+        notifications.show(getErrorMessage("Error al actualizar pago de servicio. Por favor intente de nuevo."))
+      } else {
+        setOriginalPayment(payment);
+        notifications.show(getSuccessMessage("Pago de servicio actualizado correctamente."));
+      }
+    } catch {
+      notifications.show(getErrorMessage("Error al actualizar pago de servicio. Por favor intente de nuevo."))
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -49,7 +105,7 @@ function ServicesPayment() {
         justify="center"
         mt={{ md: "xl" }}
       >
-        <Title align="start" order={4}>Pago de servicio</Title>
+        {service && <Title align="start" order={4}>Pago de: <b>{service.name}</b></Title>}
         <Flex
           maw={800}
           w="100%"
@@ -59,7 +115,7 @@ function ServicesPayment() {
         >
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !payment} flex={1}>
                 <TextInput
                   label="Concepto"
                   value={payment?.description}
@@ -72,7 +128,7 @@ function ServicesPayment() {
                   }
                 />
               </Skeleton>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !payment} flex={1}>
                 <DatePickerInput
                   flex={1}
                   label="Fecha de pago"
@@ -84,7 +140,7 @@ function ServicesPayment() {
                   }
                 />
               </Skeleton>
-              <Skeleton visible={loading} flex={1}>
+              <Skeleton visible={loading && !payment} flex={1}>
                 <TextInput
                   label="Cantidad"
                   value={payment?.amount}
@@ -105,8 +161,8 @@ function ServicesPayment() {
             <Flex justify="center" my="sm" flex={1} align="center">
               <Button
                 color="green"
-                loading={loadingUpdate}
-                disabled={loadingUpdate}
+                loading={loading}
+                disabled={loading}
                 onClick={paymentId ? handleUpdate : handleCreation}
               >
                 {paymentId ? "Actualizar" : "Guardar"}

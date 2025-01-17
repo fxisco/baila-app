@@ -30,6 +30,10 @@ export const fetchStudent = async (id) => {
   return axios.get(BASE_URL + `estudiantes/${id}`);
 }
 
+export const fetchPayment = async (id) => {
+  return axios.get(BASE_URL + `servicios/pagos/${id}`);
+}
+
 export const updateStudent = async (id, update) => {
   return axios.put(BASE_URL + `estudiantes/${id}`, update);
 }
@@ -42,6 +46,10 @@ export const updateService = async (id, update) => {
   return axios.put(BASE_URL + `servicios/${id}`, update);
 }
 
+export const updatePayment = async (id, update) => {
+  return axios.put(BASE_URL + `servicios/pagos/${id}`, update);
+}
+
 export const getGroups = async (payload) => {
   return axios.post(BASE_URL + `grupos`, payload);
 }
@@ -50,8 +58,8 @@ export const fetchGroup = async (id) => {
   return axios.get(BASE_URL + `grupos/${id}`);
 }
 
-export const fetchService = async (id) => {
-  return axios.get(BASE_URL + `servicios/${id}`);
+export const fetchService = async (id, data) => {
+  return axios.post(BASE_URL + `servicios/${id}`, data);
 }
 
 export const getServices = async () => {
@@ -68,4 +76,8 @@ export const getTeachers = async (payload) => {
 
 export const updateTeacher = async (id, update) => {
   return axios.put(BASE_URL + `profesores/${id}`, update);
+}
+
+export const deleteServicePayment = async (id) => {
+  return axios.delete(BASE_URL + `servicios/pagos/${id}`);
 }
