@@ -9,7 +9,9 @@ import { DatesProvider } from "@mantine/dates";
 import { MantineProvider, createTheme } from "@mantine/core";
 import Groups from "./pages/Groups";
 import Services from "./pages/Services";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Teachers from "./pages/Teachers";
+import Login from "./pages/Login";
 import Students from "./pages/Students";
 import StudentPayments from "./pages/StudentPayments";
 import ServicesPayment from "./pages/ServicesPayment.jsx";
@@ -25,55 +27,62 @@ import { Notifications } from "@mantine/notifications";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "@mantine/notifications/styles.css";
+import { AuthProvider } from "./hooks/useAuth";
 
 const theme = createTheme({});
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <MantineProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Notifications />
-        <DatesProvider settings={{ locale: "es-do" }}>
-          <Routes>
-            <Route
-              element={
-                <ConfirmationProvider>
-                  <StudentsProvider>
-                    <App />
-                  </StudentsProvider>
-                </ConfirmationProvider>
-              }
-            >
-              <Route path="profesores" element={<Teachers />} />
-              <Route path="grupos" element={<Groups />} />
-              <Route path="servicios" element={<Services />} />
-              <Route path="estudiantes" element={<Students />} />
+    <AuthProvider>
+      <MantineProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Notifications />
+          <DatesProvider settings={{ locale: "es-do" }}>
+            <Routes>
+              <Route path="login" element={<Login />} />
               <Route
-                path="estudiantes/:id/pagos"
-                element={<StudentPayments />}
-              />
-              <Route
-                path="servicios/:id/pagos/:paymentId?"
-                element={<ServicesPayment />}
-              />
-              <Route
-                path="estudiantes/:id/grupos"
-                element={<StudentGroups />}
-              />
-              <Route
-                path="estudiantes/:id/asistencias"
-                element={<StudentAssists />}
-              />
-              <Route path="estudiantes/:id" element={<StudentView />} />
-              <Route path="servicio/:id?" element={<ServiceView />} />
-              <Route path="grupo/:id?" element={<GroupView />} />
-              <Route path="profesor/:id?" element={<TeacherView />} />
-            </Route>
-            <Route path="formulario" element={<RegistrationForm />} />
-            <Route path="formulario/:id" element={<RegistrationForm />} />
-          </Routes>
-        </DatesProvider>
-      </LocalizationProvider>
-    </MantineProvider>
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <ConfirmationProvider>
+                      <StudentsProvider>
+                        <App />
+                      </StudentsProvider>
+                    </ConfirmationProvider>
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="profesores" element={<Teachers />} />
+                <Route path="grupos" element={<Groups />} />
+                <Route path="servicios" element={<Services />} />
+                <Route path="estudiantes" element={<Students />} />
+                <Route
+                  path="estudiantes/:id/pagos"
+                  element={<StudentPayments />}
+                />
+                <Route
+                  path="servicios/:id/pagos/:paymentId?"
+                  element={<ServicesPayment />}
+                />
+                <Route
+                  path="estudiantes/:id/grupos"
+                  element={<StudentGroups />}
+                />
+                <Route
+                  path="estudiantes/:id/asistencias"
+                  element={<StudentAssists />}
+                />
+                <Route path="estudiantes/:id" element={<StudentView />} />
+                <Route path="servicio/:id?" element={<ServiceView />} />
+                <Route path="grupo/:id?" element={<GroupView />} />
+                <Route path="profesor/:id?" element={<TeacherView />} />
+              </Route>
+              <Route path="formulario" element={<RegistrationForm />} />
+              <Route path="formulario/:id" element={<RegistrationForm />} />
+            </Routes>
+          </DatesProvider>
+        </LocalizationProvider>
+      </MantineProvider>
+    </AuthProvider>
   </BrowserRouter>
 );
