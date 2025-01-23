@@ -8,11 +8,16 @@ import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
 
 function TeacherView() {
+  const navigate = useNavigate()
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [teacher, setTeacher] = useState(null);
+  const [teacher, setTeacher] = useState({
+    active: true,
+    firstName: "",
+    lastName: "",
+    telephone: "",
+    username: "",
+  });
   const [loading, setLoading] = useState(false);
-  const [temporaryPassword, setTemporaryPassword] = useState(false);
   const [originalTeacher, setOriginalTeacher] = useState(null);
   const isDirty = JSON.stringify(teacher) !== JSON.stringify(originalTeacher);
   const isFormValid = teacher?.firstName && teacher?.lastName &&  teacher?.telephone;
@@ -52,7 +57,7 @@ function TeacherView() {
 
     try {
       const { data } = await createTeacher(newTeacher);
-      const { error, userAlreadyExits } = data;
+      const { error, userAlreadyExits, data: newFetchedTeacher } = data;
 
       if (userAlreadyExits) {
         notifications.show(getErrorMessage("El usuario de profesor ya existe. Por favor verifique la información."))
@@ -62,7 +67,9 @@ function TeacherView() {
       if (error) {
         notifications.show(getErrorMessage("Error al crear el profesor. Por favor intente de nuevo."))
       } else {
-        setOriginalTeacher(teacher);
+        setOriginalTeacher(newFetchedTeacher);
+        setTeacher(newFetchedTeacher);
+        navigate(`/profesor/${newFetchedTeacher._id}`, { replace: true });
         notifications.show(getSuccessMessage("Profesor creado correctamente."));
       }
     } catch {

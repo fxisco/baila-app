@@ -43,13 +43,13 @@ createRoot(document.getElementById("root")).render(
               <Route
                 path="/"
                 element={
-                  <ProtectedRoute>
+                  // <ProtectedRoute>
                     <ConfirmationProvider>
                       <StudentsProvider>
                         <App />
                       </StudentsProvider>
                     </ConfirmationProvider>
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 }
               >
                 <Route path="profesores" element={<Teachers />} />
