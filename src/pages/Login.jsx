@@ -10,6 +10,7 @@ import {
   Anchor,
   Alert,
   Loader,
+  PasswordInput,
   TextInput
 } from "@mantine/core";
 
@@ -61,7 +62,7 @@ function GetStarted() {
                 required
                 onChange={(e) => setForm({ ...form, user: e.target.value })}
               />
-              <TextInput
+              <PasswordInput
                 flex={1}
                 label="Contraseña"
                 value={form.password}
