@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
-  const login = async (data) => {
+  const logUser = async (data) => {
     setUser(data);
     navigate("/estudiantes");
   };
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(
     () => ({
       user,
-      login,
+      logUser,
       logout,
     }),
     [user]

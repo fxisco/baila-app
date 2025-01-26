@@ -1,38 +1,46 @@
-import { useContext, useEffect, useState } from "react";
-
+import { useState } from "react";
 import {
   Button,
   Center,
-  Text,
   Paper,
   Flex,
   Title,
-  Anchor,
-  Alert,
-  Loader,
   PasswordInput,
   TextInput
 } from "@mantine/core";
 
-import { IconInfoCircle } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
+
+import { login } from "../helpers/api";
+import { getErrorMessage } from "../helpers/strings";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function GetStarted() {
+  const { logUser } = useAuth();
+  const [progress, setProgress] = useState(false);
   const [form, setForm] = useState({
-    user: '',
+    username: '',
     password: '',
   });
-  const isValid = form.user && form.password;
+  const isValid = form.username && form.password;
 
-  const [error, setError] = useState('');
+  const handleLogin = async () => {
+    try {
+      setProgress(true);
+      const { data } = await login(form);
+      const { user, error } = data;
 
-  const handleError = ({ data = {} } = {}) => {
+      if (error) {
+        notifications.show(getErrorMessage("Error con el usuario/contraseña. Intente de nuevo."))
+        return;
+      }
 
-  };
-
-  const handleOnSuccess = async (provider, payload) => {
-    setError("");
-
-
+      logUser(user);
+    } catch {
+      notifications.show(getErrorMessage("Error autenticando usuario. Por favor intente de nuevo."))
+    } finally {
+      setProgress(false);
+    }
   };
 
   return (
@@ -42,25 +50,14 @@ function GetStarted() {
           <Title ta="center" order={2} mb={32}>
             Bienvenido
           </Title>
-          {error && (
-            <Alert
-              mb={32}
-              variant="light"
-              color="red"
-              title="Alerta"
-              icon={<IconInfoCircle />}
-            >
-              {error}
-            </Alert>
-          )}
           <Flex justify="center" mb={32} direction="column">
           <Flex flex={1} gap="md" direction="column">
               <TextInput
                 flex={1}
                 label="Usuario"
-                value={form.user}
+                value={form.username}
                 required
-                onChange={(e) => setForm({ ...form, user: e.target.value })}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
               />
               <PasswordInput
                 flex={1}
@@ -69,7 +66,7 @@ function GetStarted() {
                 required
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
-              {isValid && <Button color="green">Entrar</Button>}
+              {isValid && <Button loading={progress} color="green" onClick={handleLogin}>Entrar</Button>}
             </Flex>
           </Flex>
         </Paper>

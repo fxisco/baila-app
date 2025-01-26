@@ -81,3 +81,7 @@ export const updateTeacher = async (id, update) => {
 export const deleteServicePayment = async (id) => {
   return axios.delete(BASE_URL + `servicios/pagos/${id}`);
 }
+
+export const login = async (data) => {
+  return axios.post(BASE_URL + `login`, data);
+}

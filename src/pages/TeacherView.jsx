@@ -52,7 +52,7 @@ function TeacherView() {
     const newTeacher = {
       ...teacher,
       groups: teacher.groups ? teacher.groups : [],
-      p: randomstring.toLowerCase()
+      tempPassword: randomstring.toLowerCase()
     }
 
     try {
@@ -198,10 +198,10 @@ function TeacherView() {
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Flex flex={1}>
-                {teacher?.p && (
+                {teacher?.tempPassword && (
                   <Skeleton visible={loading && !teacher} flex={1}>
                     <Fieldset legend="Contraseña temporal" disabled pt={0} pb="xs">
-                      <Title order={3}>{teacher?.p}</Title>
+                      <Title order={3}>{teacher?.tempPassword}</Title>
                     </Fieldset>
                   </Skeleton>
                 )}

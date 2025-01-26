@@ -1,9 +1,11 @@
 import { useDisclosure } from "@mantine/hooks";
 import { AppShell, Burger, Group, Title, NavLink } from "@mantine/core";
 import { useLocation, useNavigate, Outlet } from "react-router";
-import { IconUser, IconUsersGroup, IconReceipt2, IconUserStar } from '@tabler/icons-react';
+import { useAuth } from "./hooks/useAuth.jsx";
+import { IconUser, IconUsersGroup, IconReceipt2, IconUserStar, IconLogout } from '@tabler/icons-react';
 
 function App() {
+  const { logout } = useAuth();
   const [opened, { toggle, close }] = useDisclosure();
   let { pathname } = useLocation();
   const rootPath = pathname.split("/")[1];
@@ -63,6 +65,12 @@ function App() {
             active={rootPath === "servicios"}
             onClick={() => handleNavigation("/servicios")}
             leftSection={<IconReceipt2 />}
+            fw="bolder"
+          />
+          <NavLink
+            label="Cerrar sesión"
+            onClick={() => logout()}
+            leftSection={<IconLogout color="red" />}
             fw="bolder"
           />
         </AppShell.Navbar>
