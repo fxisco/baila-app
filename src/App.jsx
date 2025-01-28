@@ -2,7 +2,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { AppShell, Burger, Group, Title, NavLink } from "@mantine/core";
 import { useLocation, useNavigate, Outlet } from "react-router";
 import { useAuth } from "./hooks/useAuth.jsx";
-import { IconUser, IconUsersGroup, IconReceipt2, IconUserStar, IconLogout } from '@tabler/icons-react';
+import {
+  IconUser,
+  IconUsersGroup,
+  IconReceipt2,
+  IconUserStar,
+  IconLogout,
+  IconKey,
+} from "@tabler/icons-react";
 
 function App() {
   const { logout } = useAuth();
@@ -68,11 +75,22 @@ function App() {
             fw="bolder"
           />
           <NavLink
-            label="Cerrar sesión"
-            onClick={() => logout()}
-            leftSection={<IconLogout color="red" />}
+            label="Cuenta"
+            childrenOffset={28}
+            defaultOpened
             fw="bolder"
-          />
+          >
+            <NavLink
+              label="Cambio de contraseña"
+              onClick={() => logout()}
+              leftSection={<IconKey color="gray" />}
+            />
+            <NavLink
+              label="Cerrar sesión"
+              onClick={() => logout()}
+              leftSection={<IconLogout color="red" />}
+            />
+          </NavLink>
         </AppShell.Navbar>
         <AppShell.Main>
           <Outlet />
