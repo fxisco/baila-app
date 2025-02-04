@@ -21,6 +21,7 @@ import StudentView from "./pages/StudentView";
 import TeacherView from "./pages/TeacherView";
 import ServiceView from "./pages/ServiceView";
 import GroupView from "./pages/GroupView";
+import PasswordChange from "./pages/PasswordChange";
 import { StudentsProvider } from "./providers/StudentsProvider";
 import { ConfirmationProvider } from "./providers/ConfirmationProvider.jsx";
 import { Notifications } from "@mantine/notifications";
@@ -76,6 +77,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="servicio/:id?" element={<ServiceView />} />
                 <Route path="grupo/:id?" element={<GroupView />} />
                 <Route path="profesor/:id?" element={<TeacherView />} />
+                <Route path="cambio-password" element={<PasswordChange />} />
               </Route>
               <Route path="formulario" element={<RegistrationForm />} />
               <Route path="formulario/:id" element={<RegistrationForm />} />

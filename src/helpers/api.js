@@ -85,3 +85,7 @@ export const deleteServicePayment = async (id) => {
 export const login = async (data) => {
   return axios.post(BASE_URL + `login`, data);
 }
+
+export const changePassword = async (data) => {
+  return axios.post(BASE_URL + `change-password`, data);
+}

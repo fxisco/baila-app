@@ -82,7 +82,7 @@ function App() {
           >
             <NavLink
               label="Cambio de contraseña"
-              onClick={() => logout()}
+              onClick={() => handleNavigation("/cambio-password")}
               leftSection={<IconKey color="gray" />}
             />
             <NavLink
