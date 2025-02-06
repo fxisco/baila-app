@@ -3,8 +3,10 @@ import { Flex, Button, PasswordInput } from "@mantine/core";
 import { changePassword } from "../helpers/api";
 import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function PasswordChange() {
+  const { handleAuthError } = useAuth();
   const [form, setForm] = useState({
     oldPassword: '',
     newPassword: '',
@@ -12,12 +14,16 @@ function PasswordChange() {
   });
   const [loading, setLoading] = useState(false);
   const samePassword = form?.newPassword === form?.repeatNewPassword;
-  const isFormValid = form?.oldPassword && form?.newPassword &&  form?.repeatNewPassword && !samePassword;
+  const isFormValid = form?.oldPassword && form?.newPassword &&  form?.repeatNewPassword && samePassword;
 
   const handleChangePassword = async () => {
+    // eslint-disable-next-line no-unused-vars
+    const { repeatNewPassword, ...rest } = form;
+
     setLoading(true);
+
     try {
-      const { data } =  await changePassword(form);
+      const { data } =  await changePassword(rest);
       const { error } = data;
 
       if (error) {
@@ -25,11 +31,17 @@ function PasswordChange() {
         return;
       }
 
-      notifications.showNotification(getSuccessMessage("Contraseña cambiada con éxito."));
-    } catch {
-      notifications.showNotification(getErrorMessage("Error al cambiar contraseña. Intente de nuevo."));
+      notifications.show(getSuccessMessage("Contraseña cambiada con éxito."));
+    } catch (e) {
+      handleAuthError(e);
+      notifications.show(getErrorMessage("Error al cambiar contraseña. Intente de nuevo."));
     } finally {
       setLoading(false);
+      setForm({
+        oldPassword: '',
+        newPassword: '',
+        repeatNewPassword: '',
+      });
     }
   }
 
@@ -66,8 +78,8 @@ function PasswordChange() {
                 flex={1}
                 label="Constraseña nueva"
                 error={
-                  form.newPassword.length > 0 &&
-                  form.repeatNewPassword.length > 0 &&
+                  form?.newPassword.length > 0 &&
+                  form?.repeatNewPassword.length > 0 &&
                   !samePassword
                     ? "Contraseñas no coinciden"
                     : form?.newPassword === form?.oldPassword &&

@@ -2,6 +2,16 @@ import axios from 'axios';
 
 const BASE_URL = 'https://ditglcfd5xquiwzrhat7r3b4p40dglnu.lambda-url.us-east-1.on.aws/'
 
+const getAuthorizationHeader = () => {
+  const token = JSON.parse(localStorage.getItem('user') || {})?.token;
+
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+}
+
 export const createStudent = async (data) => {
   return axios.put(BASE_URL + 'estudiantes', data);
 }
@@ -87,5 +97,9 @@ export const login = async (data) => {
 }
 
 export const changePassword = async (data) => {
-  return axios.post(BASE_URL + `change-password`, data);
+  return axios.post(BASE_URL + `profesores/change-password`, data, getAuthorizationHeader());
+}
+
+export const resetTempPassword = async (id) => {
+  return axios.post(BASE_URL + `profesores/${id}/reset-password`, null, getAuthorizationHeader());
 }

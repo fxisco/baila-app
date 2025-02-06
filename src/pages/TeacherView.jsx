@@ -3,11 +3,18 @@ import { useParams } from "react-router";
 import { Flex, TextInput, Skeleton, Button, Switch, Fieldset, Title } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
-import { createTeacher, fetchTeacher, updateTeacher } from "../helpers/api";
+import {
+  createTeacher,
+  fetchTeacher,
+  updateTeacher,
+  resetTempPassword,
+} from "../helpers/api";
 import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 function TeacherView() {
+  const { handleAuthError } = useAuth();
   const navigate = useNavigate()
   const { id } = useParams();
   const [teacher, setTeacher] = useState({
@@ -99,6 +106,29 @@ function TeacherView() {
       }
     } catch {
       notifications.show(getErrorMessage("Error al actualizar el profesor. Por favor intente de nuevo."))
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleResetTempPassword = async () => {
+    setLoading(true);
+
+    try {
+      const { data } = await resetTempPassword(id);
+      const { tempPassword } = data;
+      const update = {
+        ...teacher,
+        tempPassword
+      }
+
+      setOriginalTeacher(update);
+      setTeacher(update);
+
+      notifications.show(getSuccessMessage("Contraseña temporal reestablecida correctamente."));
+    } catch (e) {
+      handleAuthError(e)
+      notifications.show(getErrorMessage("Error al reestablecer contraseña temporal. Por favor intente de nuevo."))
     } finally {
       setLoading(false);
     }
@@ -200,10 +230,25 @@ function TeacherView() {
               <Flex flex={1}>
                 {teacher?.tempPassword && (
                   <Skeleton visible={loading && !teacher} flex={1}>
-                    <Fieldset legend="Contraseña temporal" disabled pt={0} pb="xs">
+                    <Fieldset
+                      legend="Contraseña temporal"
+                      disabled
+                      pt={0}
+                      pb="xs"
+                    >
                       <Title order={3}>{teacher?.tempPassword}</Title>
                     </Fieldset>
                   </Skeleton>
+                )}
+                {teacher?.password && !teacher?.tempPassword && (
+                  <Button
+                    color="blue"
+                    loading={loading}
+                    disabled={loading}
+                    onClick={handleResetTempPassword}
+                  >
+                    Reestablecer contraseña temporal
+                  </Button>
                 )}
               </Flex>
               <Flex flex={1}></Flex>
