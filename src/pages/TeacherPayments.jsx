@@ -1,7 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import { useParams } from "react-router";
-import { Flex, Text, Button, Table, Loader, Tooltip, ActionIcon } from "@mantine/core";
+import {
+  Flex,
+  Text,
+  Button,
+  Table,
+  Loader,
+  Tooltip,
+  ActionIcon,
+  Breadcrumbs,
+  Anchor,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
 import { IconX, IconPlus } from "@tabler/icons-react";
 
@@ -123,12 +133,20 @@ function TearcherPayment() {
           align="center"
           direction="column"
         >
+          <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/profesores")} underline="never">
+                  Profesores
+              </Anchor>
+              {id && <Anchor underline="never" onClick={() => navigate(`/profesor/${id}`)} >
+                {teacher?.firstName} {teacher?.lastName}
+              </Anchor>}
+              {teacher && <Anchor underline="never" >
+                Pagos
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
           <Flex justify="space-between" my="sm" w="100%" direction="column">
-            <Flex my="sm" flex={1} justify="start">
-              <Text size="xl" weight={700}>
-                Pagos de <b>{teacher?.firstName} {teacher?.lastName}</b>
-              </Text>
-            </Flex>
             <Flex my="sm" flex={1} justify="start">
               <Button
                 onClick={() => navigate(`/profesores/${id}/pagos/formulario`)}

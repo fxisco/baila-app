@@ -1,7 +1,15 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Flex, TextInput, Skeleton, Button, Title } from "@mantine/core";
+import {
+  Flex,
+  TextInput,
+  Skeleton,
+  Button,
+  Title,
+  Breadcrumbs,
+  Anchor,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { DatePickerInput } from '@mantine/dates';
@@ -105,7 +113,6 @@ function ServicesPayment() {
         justify="center"
         mt={{ md: "xl" }}
       >
-        {service && <Title align="start" order={4}>Pago de: <b>{service.name}</b></Title>}
         <Flex
           maw={800}
           w="100%"
@@ -113,6 +120,19 @@ function ServicesPayment() {
           align="center"
           direction="column"
         >
+          <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/servicios")} underline="never">
+                  Servicios
+              </Anchor>
+              {service && <Anchor onClick={() => navigate(`/servicio/${id}`)} underline="never">
+                {service?.name}
+              </Anchor>}
+              {<Anchor underline="never" >
+                Pagos
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Skeleton visible={loading && !payment} flex={1}>

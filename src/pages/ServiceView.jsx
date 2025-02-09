@@ -1,7 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import { useParams } from "react-router";
-import { Flex, Text, TextInput, Skeleton, Button, Table, Loader, Tooltip, ActionIcon } from "@mantine/core";
+import {
+  Flex,
+  Text,
+  TextInput,
+  Skeleton,
+  Button,
+  Table,
+  Loader,
+  Tooltip,
+  ActionIcon,
+  Breadcrumbs,
+  Anchor,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
 import { IconX, IconPlus } from "@tabler/icons-react";
 
@@ -160,6 +172,16 @@ function ServiceView() {
           align="center"
           direction="column"
         >
+          <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/servicios")} underline="never">
+                  Servicios
+              </Anchor>
+              {id && <Anchor underline="never">
+                {originalService?.name}
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
           <Flex justify="space-between" my="sm" w="100%" direction="column">
             <Flex my="sm" flex={1} justify="start">
               <Button

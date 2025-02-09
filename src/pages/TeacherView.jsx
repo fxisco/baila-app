@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { Flex, TextInput, Skeleton, Button, Switch, Fieldset, Title } from "@mantine/core";
+import {
+  Flex,
+  TextInput,
+  Skeleton,
+  Button,
+  Switch,
+  Fieldset,
+  Title,
+  Breadcrumbs,
+  Anchor,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
 import {
@@ -24,7 +34,7 @@ function TeacherView() {
     telephone: "",
     username: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [originalTeacher, setOriginalTeacher] = useState(null);
   const isDirty = JSON.stringify(teacher) !== JSON.stringify(originalTeacher);
   const isFormValid = teacher?.firstName && teacher?.lastName &&  teacher?.telephone;
@@ -150,8 +160,18 @@ function TeacherView() {
           direction="column"
         >
           <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/profesores")} underline="never">
+                  Profesores
+              </Anchor>
+              {id && <Anchor underline="never">
+                {originalTeacher?.firstName} {originalTeacher?.lastName}
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading && !teacher} flex={1}>
+              <Skeleton visible={loading} flex={1}>
                 <Switch
                   checked={teacher?.active}
                   size="xl"
@@ -169,7 +189,7 @@ function TeacherView() {
           </Flex>
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading && !teacher} flex={1}>
+              <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Nombre/s"
                   value={teacher?.firstName}
@@ -182,7 +202,7 @@ function TeacherView() {
                   }
                 />
               </Skeleton>
-              <Skeleton visible={loading && !teacher} flex={1}>
+              <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Apellido/s"
                   value={teacher?.lastName}
@@ -199,7 +219,7 @@ function TeacherView() {
           </Flex>
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
-              <Skeleton visible={loading && !teacher} flex={1}>
+              <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Whatsapp"
                   value={teacher?.telephone}
@@ -211,7 +231,7 @@ function TeacherView() {
                   }
                 />
               </Skeleton>
-              <Skeleton visible={loading && !teacher} flex={1}>
+              <Skeleton visible={loading} flex={1}>
                 <TextInput
                   label="Nombre de usuario"
                   value={teacher?.username}
@@ -229,7 +249,7 @@ function TeacherView() {
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Flex flex={1}>
                 {teacher?.tempPassword && (
-                  <Skeleton visible={loading && !teacher} flex={1}>
+                  <Skeleton visible={loading} flex={1}>
                     <Fieldset
                       legend="Contraseña temporal"
                       disabled
