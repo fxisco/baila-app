@@ -19,6 +19,8 @@ import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
 import TeacherView from "./pages/TeacherView";
+import TeacherPayments from "./pages/TeacherPayments.jsx";
+import TeacherPaymentForm from "./pages/TeacherPaymentForm.jsx";
 import ServiceView from "./pages/ServiceView";
 import GroupView from "./pages/GroupView";
 import PasswordChange from "./pages/PasswordChange";
@@ -77,6 +79,8 @@ createRoot(document.getElementById("root")).render(
                 <Route path="servicio/:id?" element={<ServiceView />} />
                 <Route path="grupo/:id?" element={<GroupView />} />
                 <Route path="profesor/:id?" element={<TeacherView />} />
+                <Route path="profesores/:id/pagos" element={<TeacherPayments />} />
+                <Route path="profesores/:id/pagos/formulario/:paymentId?" element={<TeacherPaymentForm />} />
                 <Route path="cambio-password" element={<PasswordChange />} />
               </Route>
               <Route path="formulario" element={<RegistrationForm />} />

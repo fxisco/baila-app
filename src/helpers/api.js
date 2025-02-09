@@ -103,3 +103,24 @@ export const changePassword = async (data) => {
 export const resetTempPassword = async (id) => {
   return axios.post(BASE_URL + `profesores/${id}/reset-password`, null, getAuthorizationHeader());
 }
+
+export const createTeacherPayment = async (id, data) => {
+  return axios.put(BASE_URL + `profesores/${id}/pagos`, data, getAuthorizationHeader());
+}
+
+export const getTeacherPayments = async (id) => {
+  return axios.get(BASE_URL + `profesores/${id}/pagos`, getAuthorizationHeader());
+}
+
+export const getTeacherPayment = async (id, data) => {
+  return axios.post(BASE_URL + `profesores/${id}/pago`, data, getAuthorizationHeader());
+}
+
+export const updateTeacherPayment = async (id, update) => {
+  return axios.put(BASE_URL + `profesores/pagos/${id}`, update, getAuthorizationHeader());
+}
+
+
+export const deleteTeacherPayment = async (id) => {
+  return axios.delete(BASE_URL + `profesores/pagos/${id}`, getAuthorizationHeader());
+}

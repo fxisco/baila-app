@@ -65,7 +65,7 @@ function Teachers() {
               title="Pagos"
               color="green"
               radius="xl"
-              onClick={(e) => handleNavigation(e, `/profesores/${element.id}/pagos`)}
+              onClick={(e) => handleNavigation(e, `/profesores/${element._id}/pagos`)}
             >
               <IconReceipt2 />
             </ActionIcon>
