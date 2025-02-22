@@ -1,7 +1,21 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import dayjs from 'dayjs';
-import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title, Switch, Autocomplete, Pill } from "@mantine/core";
+import {
+  Flex,
+  TextInput,
+  Skeleton,
+  Button,
+  MultiSelect,
+  Checkbox,
+  Group,
+  Title,
+  Switch,
+  Autocomplete,
+  Pill,
+  Breadcrumbs,
+  Anchor
+} from "@mantine/core";
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
@@ -187,6 +201,16 @@ function GroupView() {
           direction="column"
         >
           <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/grupos")} underline="never">
+                  Grupos
+              </Anchor>
+              {id && <Anchor underline="never">
+                {originalGroup?.name}
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Skeleton visible={loading && !group} flex={1}>
                 <Switch
@@ -324,59 +348,61 @@ function GroupView() {
               </Flex>
             ))}
           </Flex>
-          <Flex justify="space-between" my="sm" w="100%" direction="column">
-            <Title order={4} mb={16}>
-              Estudiantes
-            </Title>
-            <Autocomplete
-              label="Buscar por nombre"
-              onChange={handleSearchInput}
-              flex={1}
-              value={search}
-              comboboxProps={{
-                onOptionSubmit: (val) => {
-                  setGroup({
-                    ...group,
-                    students: [...group.students, val].sort(),
-                  })
-                  setSelectedUsers([...selectedUser, users[val]]);
-                  setSearch("");
-                  setUsers({});
-                },
-              }}
-              data={Object.keys(users).map((key) => ({
-                value: users[key]._id,
-                label: `${users[key].firstName} ${users[key].lastName}`,
-              })).filter((option) => !selectedUser.find((item)=> item._id === option.value))}
-            />
-            <Flex gap="md" mt={16} direction="column">
-              {selectedUser.length > 0 && selectedUser
-                .sort(((a, b) => {
-                  const nameA = `${a.firstName} ${a.lastName}`
-                  const nameB = `${b.firstName} ${b.lastName}`
-                  if (nameA > nameB) return 1;
-                  if (nameA < nameB) return -1;
-                  return 0;
-                }))
-                .map((student) => (
-                <div key={student._id}>
-                  <Pill
-                    withRemoveButton
-                    size="lg"
-                    onRemove={
-                      () => {
-                        setGroup({
-                          ...group,
-                          students: group.students.filter((id) => id !== student._id).sort(),
-                        });
-                        setSelectedUsers(selectedUser.filter((item) => item._id !== student._id));
+          <Skeleton visible={loading} flex={1}>
+            <Flex justify="space-between" my="sm" w="100%" direction="column">
+              <Title order={4} mb={16}>
+                Estudiantes
+              </Title>
+              <Autocomplete
+                label="Buscar nombre"
+                onChange={handleSearchInput}
+                flex={1}
+                value={search}
+                comboboxProps={{
+                  onOptionSubmit: (val) => {
+                    setGroup({
+                      ...group,
+                      students: [...group.students, val].sort(),
+                    })
+                    setSelectedUsers([...selectedUser, users[val]]);
+                    setSearch("");
+                    setUsers({});
+                  },
+                }}
+                data={Object.keys(users).map((key) => ({
+                  value: users[key]._id,
+                  label: `${users[key].firstName} ${users[key].lastName}`,
+                })).filter((option) => !selectedUser.find((item)=> item._id === option.value))}
+              />
+              <Flex gap="md" mt={16} direction="column">
+                {selectedUser.length > 0 && selectedUser
+                  .sort(((a, b) => {
+                    const nameA = `${a.firstName} ${a.lastName}`
+                    const nameB = `${b.firstName} ${b.lastName}`
+                    if (nameA > nameB) return 1;
+                    if (nameA < nameB) return -1;
+                    return 0;
+                  }))
+                  .map((student) => (
+                  <div key={student._id}>
+                    <Pill
+                      withRemoveButton
+                      size="lg"
+                      onRemove={
+                        () => {
+                          setGroup({
+                            ...group,
+                            students: group.students.filter((id) => id !== student._id).sort(),
+                          });
+                          setSelectedUsers(selectedUser.filter((item) => item._id !== student._id));
+                        }
                       }
-                    }
-                  >{`${student.firstName} ${student.lastName}`}</Pill>
-                </div>
-              ))}
+                    >{`${student.firstName} ${student.lastName}`}</Pill>
+                  </div>
+                ))}
+              </Flex>
             </Flex>
-          </Flex>
+          </Skeleton>
           {isFormValid && isDirty && (
             <Flex justify="center" my="sm" flex={1} align="center">
               <Button
