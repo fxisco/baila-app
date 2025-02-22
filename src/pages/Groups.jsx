@@ -3,7 +3,7 @@ import { Table, Flex, Button, Loader, List, Badge, SegmentedControl } from "@man
 import { IconPlus } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
-import { getGroups } from "../helpers/api";
+import { getGroups, getTeachers } from "../helpers/api";
 import { getErrorMessage } from "../helpers/strings";
 import { DAYS, DEFAULT_TIME_FORMAT } from "../constants";
 import dayjs from 'dayjs';
@@ -11,12 +11,41 @@ import dayjs from 'dayjs';
 function Groups() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
+  const [teachers, setTeachers] = useState({});
   const [groupsType, setGroupsType] = useState('Activos');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     setGroups([]);
+
+    const fetchTeachers = async () => {
+      try {
+        const { data } = await getTeachers();
+        const { result, error } = data;
+
+        if (error) {
+          notifications.show(
+            getErrorMessage(
+              "Error cargando datos. Por favor refresque la página."
+            )
+          );
+          return;
+        }
+
+        setTeachers(result.reduce((accum, item) => {
+          accum[item._id] = item;
+          return accum;
+        }, {}));
+      } catch {
+        notifications.show(
+          getErrorMessage(
+            "Error cargando datos. Por favor refresque la página."
+          )
+        );
+      }
+    };
+
 
     const fetchGroups = async () => {
       try {
@@ -36,6 +65,7 @@ function Groups() {
       }
     }
 
+    fetchTeachers();
     fetchGroups();
   }, [groupsType]);
 
@@ -59,8 +89,8 @@ function Groups() {
         </Table.Td>
         <Table.Td>
           <Flex gap="xs" direction="column">
-            {element.teachers.map((teacher) => (
-              <Badge key={`${element._id}-${teacher}`} variant="light">{teacher}</Badge>
+            {element.teachers.map((teacherId) => (
+              <Badge key={`${element._id}-${teacherId}`} variant="light">{teachers[teacherId] ? `${teachers[teacherId].firstName} ${teachers[teacherId].lastName}`: ''}</Badge>
             ))}
           </Flex>
         </Table.Td>

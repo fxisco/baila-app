@@ -80,7 +80,7 @@ export const fetchTeacher = async (id) => {
   return axios.get(BASE_URL + `profesores/${id}`);
 }
 
-export const getTeachers = async (payload) => {
+export const getTeachers = async (payload = {}) => {
   return axios.post(BASE_URL + `profesores`, payload);
 }
 

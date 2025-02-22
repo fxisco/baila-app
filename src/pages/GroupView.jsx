@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import dayjs from 'dayjs';
-import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title, Switch } from "@mantine/core";
+import { Flex, TextInput, Skeleton, Button, MultiSelect, Checkbox, Group, Title, Switch, Autocomplete, Pill } from "@mantine/core";
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
+import { useDebouncedCallback } from '@mantine/hooks';
 import { DAYS } from "../constants";
-import { createGroup, fetchGroup, updateGroup } from "../helpers/api";
+import { createGroup, fetchGroup, updateGroup, getTeachers, searchStudent } from "../helpers/api";
 import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
 
@@ -14,16 +15,49 @@ function GroupView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
-  const [teachers, setTeachers] = useState(['1', '2', '3', '4', '5']);
-  const [loading, setLoading] = useState(false);
+  const [teachers, setTeachers] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [users, setUsers] = useState({});
+  const [selectedUser, setSelectedUsers] = useState([]);
+
   const [originalGroup, setOriginalGroup] = useState(null);
   const isDirty = JSON.stringify(group) !== JSON.stringify(originalGroup);
-  const formattedTeachers = teachers
+  const formattedTeachers = Object.keys(teachers).map((id) => ({ value: teachers[id]._id, label: `${teachers[id].firstName} ${teachers[id].lastName}` }))
   const hasSchedules = group?.schedules && Object.keys(group.schedules).length > 0;
   const allSchedulesFilled = Object.values(group?.schedules || {}).every(({ start, end }) => start && end);
-  const isFormValid = group?.name && group?.teachers?.length > 0 && allSchedulesFilled && hasSchedules;
+  const isFormValid = group?.name && allSchedulesFilled && hasSchedules;
 
   useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        const { data } = await getTeachers();
+        const { result, error } = data;
+
+        if (error) {
+          notifications.show(
+            getErrorMessage(
+              "Error cargando datos. Por favor refresque la página."
+            )
+          );
+          return;
+        }
+
+        setTeachers(result.reduce((accum, item) => {
+          accum[item._id] = item;
+          return accum;
+        }, {}));
+      } catch {
+        notifications.show(
+          getErrorMessage(
+            "Error cargando datos. Por favor refresque la página."
+          )
+        );
+      }
+    };
+
+    fetchTeachers()
+
     if (!id) {
       setLoading(false);
       return;
@@ -32,11 +66,12 @@ function GroupView() {
     const fetchGroupById = async (groupId) => {
       try {
         const { data } = await fetchGroup(groupId);
-        const { result, error } = data;
-        const fetchedGroup = error ? null : result;
+        const { group: groupData, students, error } = data;
+        const fetchedGroup = error ? null : groupData;
 
         setOriginalGroup(fetchedGroup);
         setGroup(fetchedGroup);
+        setSelectedUsers(students);
       } catch {
         notifications.show(getErrorMessage("Error al cargar el grupo. Refresque la página."))
       } finally {
@@ -104,6 +139,37 @@ function GroupView() {
     }})
   }
 
+  const handleSearch = useDebouncedCallback(async (value) => {
+    try {
+      const { data } = await searchStudent(value.trim());
+
+      setUsers(data.results.reduce((accum, item) => {
+        accum[item._id] = item;
+        return accum;
+      }
+      , {}));
+    } catch {
+      notifications.show(getErrorMessage("Error al buscar estudiante. Por favor intente de nuevo."))
+    } finally {
+      setLoading(false);
+    }
+  }, 300);
+
+  const handleSearchInput = (value) => {
+    if (search.length === 0) {
+      setUsers([]);
+    }
+
+    setSearch(value);
+
+    if (value.length === 0) {
+      setUsers([]);
+      return;
+    }
+
+    handleSearch(value);
+  }
+
   return (
     <>
       <Flex
@@ -111,6 +177,7 @@ function GroupView() {
         align="center"
         justify="center"
         mt={{ md: "xl" }}
+        mb={{ md: 128 }}
       >
         <Flex
           maw={800}
@@ -130,7 +197,7 @@ function GroupView() {
                     setGroup({
                       ...group,
                       active: e.currentTarget.checked,
-                    })
+                    });
                   }}
                 />
               </Skeleton>
@@ -256,6 +323,59 @@ function GroupView() {
                 </Flex>
               </Flex>
             ))}
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%" direction="column">
+            <Title order={4} mb={16}>
+              Estudiantes
+            </Title>
+            <Autocomplete
+              label="Buscar por nombre"
+              onChange={handleSearchInput}
+              flex={1}
+              value={search}
+              comboboxProps={{
+                onOptionSubmit: (val) => {
+                  setGroup({
+                    ...group,
+                    students: [...group.students, val].sort(),
+                  })
+                  setSelectedUsers([...selectedUser, users[val]]);
+                  setSearch("");
+                  setUsers({});
+                },
+              }}
+              data={Object.keys(users).map((key) => ({
+                value: users[key]._id,
+                label: `${users[key].firstName} ${users[key].lastName}`,
+              })).filter((option) => !selectedUser.find((item)=> item._id === option.value))}
+            />
+            <Flex gap="md" mt={16} direction="column">
+              {selectedUser.length > 0 && selectedUser
+                .sort(((a, b) => {
+                  const nameA = `${a.firstName} ${a.lastName}`
+                  const nameB = `${b.firstName} ${b.lastName}`
+                  if (nameA > nameB) return 1;
+                  if (nameA < nameB) return -1;
+                  return 0;
+                }))
+                .map((student) => (
+                <div key={student._id}>
+                  <Pill
+                    withRemoveButton
+                    size="lg"
+                    onRemove={
+                      () => {
+                        setGroup({
+                          ...group,
+                          students: group.students.filter((id) => id !== student._id).sort(),
+                        });
+                        setSelectedUsers(selectedUser.filter((item) => item._id !== student._id));
+                      }
+                    }
+                  >{`${student.firstName} ${student.lastName}`}</Pill>
+                </div>
+              ))}
+            </Flex>
           </Flex>
           {isFormValid && isDirty && (
             <Flex justify="center" my="sm" flex={1} align="center">
