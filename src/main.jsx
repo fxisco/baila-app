@@ -5,6 +5,7 @@ import RegistrationForm from "./pages/RegistrationForm.jsx";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "dayjs/locale/es-do.js";
+import dayjs from 'dayjs';
 import { DatesProvider } from "@mantine/dates";
 import { MantineProvider, createTheme } from "@mantine/core";
 import Groups from "./pages/Groups";
@@ -18,6 +19,7 @@ import ServicesPayment from "./pages/ServicesPayment.jsx";
 import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
+import GroupAttendance from "./pages/GroupAttendance";
 import TeacherView from "./pages/TeacherView";
 import TeacherPayments from "./pages/TeacherPayments.jsx";
 import TeacherPaymentForm from "./pages/TeacherPaymentForm.jsx";
@@ -31,6 +33,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "@mantine/notifications/styles.css";
 import { AuthProvider } from "./hooks/useAuth";
+
+dayjs.locale('es-do')
 
 const theme = createTheme({});
 
@@ -62,6 +66,10 @@ createRoot(document.getElementById("root")).render(
                 <Route
                   path="estudiantes/:id/pagos"
                   element={<StudentPayments />}
+                />
+                <Route
+                  path="grupos/:id/asistencia"
+                  element={<GroupAttendance />}
                 />
                 <Route
                   path="servicios/:id/pagos/:paymentId?"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Flex, Button, Loader, List, Badge, SegmentedControl } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { Table, Flex, Button, Loader, List, Badge, SegmentedControl, Tooltip, ActionIcon } from "@mantine/core";
+import { IconPlus, IconListCheck } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { getGroups, getTeachers } from "../helpers/api";
@@ -70,6 +70,11 @@ function Groups() {
   }, [groupsType]);
 
   const rows = groups.map((element) => {
+    const handleNavigation = (e, route) => {
+      e.stopPropagation();
+      navigate(route);
+    }
+
     return (
       <Table.Tr
         key={element._id}
@@ -94,7 +99,21 @@ function Groups() {
             ))}
           </Flex>
         </Table.Td>
-        <Table.Td></Table.Td>
+        <Table.Td>
+        <Flex gap={"sm"}>
+            <Tooltip label="Pasar asistencia" position="left">
+              <ActionIcon
+                variant="subtle"
+                title="Pasar asistencia"
+                color="green"
+                radius="xl"
+                onClick={(e) => handleNavigation(e, `/grupos/${element._id}/asistencia`)}
+              >
+                <IconListCheck />
+              </ActionIcon>
+            </Tooltip>
+          </Flex>
+        </Table.Td>
       </Table.Tr>
     );
   });
@@ -130,6 +149,7 @@ function Groups() {
             <Table.Th>Nombre</Table.Th>
             <Table.Th>Horario</Table.Th>
             <Table.Th>Profesor</Table.Th>
+            <Table.Th>Acciones</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>

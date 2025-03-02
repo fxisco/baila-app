@@ -88,6 +88,14 @@ export const updateTeacher = async (id, update) => {
   return axios.put(BASE_URL + `profesores/${id}`, update);
 }
 
+export const updateAttendance = async (id, update) => {
+  return axios.put(BASE_URL + `grupos/${id}/asistencia`, update);
+}
+
+export const fetchGroupAttendance = async (id, data) => {
+  return axios.post(BASE_URL + `grupos/${id}/asistencia`, data);
+}
+
 export const deleteServicePayment = async (id) => {
   return axios.delete(BASE_URL + `servicios/pagos/${id}`);
 }
