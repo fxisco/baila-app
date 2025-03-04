@@ -19,6 +19,17 @@ import { updateAttendance, fetchGroupAttendance } from "../helpers/api";
 import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
 
+const formatAttendance = (attendance) => {
+  return {
+    days: Object.keys(attendance).sort(),
+    present: Object.keys(attendance).reduce((accum, key) => {
+      const present = Object.keys(attendance[key]).map((val) => `${key}:${val}`).sort()
+      accum.push(...present)
+      return accum
+    }, [])
+  };
+}
+
 function GroupAttendance() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -27,14 +38,13 @@ function GroupAttendance() {
   const [attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [month, setMonth] = useState(new Date());
+  const [month, setMonth] = useState(dayjs().startOf('month'));
   const currentMonth = dayjs(month).format('YYYY-MM');
   const nextMonth = dayjs(month).add(1, 'month').toDate();
-  const [originalAttendance, setOriginalAttendance] = useState(null);
+  const [originalAttendance, setOriginalAttendance] = useState({});
   const days = getDaysArray(month, nextMonth);
   const daysArray = days.slice(0, days.length - 1)
-  const isDirty = JSON.stringify(attendance) !== JSON.stringify(originalAttendance);
-  const isFormValid = true;
+  const isDirty = JSON.stringify(formatAttendance(attendance)) !== JSON.stringify(formatAttendance(originalAttendance));
 
   useEffect(() => {
     if (!id) {
@@ -89,10 +99,14 @@ function GroupAttendance() {
 
   const handleDateCheck = (student, checkedDate, checked) => {
     setAttendance((prev) => {
-      const newAttendance = { ...prev };
+      let newAttendance = { ...prev };
 
       if (newAttendance[checkedDate]?.[student._id]) {
-        delete newAttendance[checkedDate]?.[student._id]
+        const { [student._id]: _, ...rest } = newAttendance[checkedDate]
+        return {
+          ...newAttendance,
+          [checkedDate]: rest
+        }
       } else {
         newAttendance[checkedDate] = {
           ...newAttendance[checkedDate],
@@ -208,7 +222,7 @@ function GroupAttendance() {
             </Table>
           </Flex>
         </Flex>
-        {isFormValid && isDirty && (
+        {isDirty && (
           <Flex justify="center" my="sm" flex={1} align="center">
             <Button
               color="green"
