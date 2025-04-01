@@ -33,7 +33,7 @@ function Students() {
                 title="Pagos"
                 color="green"
                 radius="xl"
-                onClick={(e) => handleNavigation(e, `/estudiantes/${element.id}/pagos`)}
+                onClick={(e) => handleNavigation(e, `/estudiantes/${element._id}/pagos`)}
               >
                 <IconReceipt2 />
               </ActionIcon>
@@ -44,7 +44,7 @@ function Students() {
                 title="Asistencias"
                 color="purple"
                 radius="xl"
-                onClick={(e) => handleNavigation(e, `/estudiantes/${element.id}/asistencias`)}
+                onClick={(e) => handleNavigation(e, `/estudiantes/${element._id}/asistencias`)}
               >
                 <IconCircleCheck />
               </ActionIcon>

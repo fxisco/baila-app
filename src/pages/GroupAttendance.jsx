@@ -157,7 +157,7 @@ function GroupAttendance() {
               <Anchor onClick={() => navigate("/grupos")} underline="never">
                 Grupos
               </Anchor>
-              {id && <Anchor underline="never">
+              {id && <Anchor onClick={() => navigate(`/grupo/${group?._id}`)} underline="never">
                 {group?.name}
               </Anchor>}
               <Anchor underline="never" >

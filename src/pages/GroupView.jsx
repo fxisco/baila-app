@@ -7,6 +7,7 @@ import {
   Skeleton,
   Button,
   MultiSelect,
+  Select,
   Checkbox,
   Group,
   Title,
@@ -40,7 +41,7 @@ function GroupView() {
   const formattedTeachers = Object.keys(teachers).map((id) => ({ value: teachers[id]._id, label: `${teachers[id].firstName} ${teachers[id].lastName}` }))
   const hasSchedules = group?.schedules && Object.keys(group.schedules).length > 0;
   const allSchedulesFilled = Object.values(group?.schedules || {}).every(({ start, end }) => start && end);
-  const isFormValid = group?.name && allSchedulesFilled && hasSchedules;
+  const isFormValid = group?.name && group?.local && allSchedulesFilled && hasSchedules;
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -257,6 +258,24 @@ function GroupView() {
                   value={group?.teachers || []}
                 />
               </Skeleton>
+            </Flex>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
+            <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
+              <Skeleton visible={loading && !group} flex={1}>
+                <Select
+                  label="Local"
+                  value={group?.local || ''}
+                  onChange={(value) =>
+                    setGroup({
+                      ...group,
+                      local: value,
+                    })
+                  }
+                  data={['Cecomsa', 'Bella Terra']}
+                />
+              </Skeleton>
+              <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}></Flex>
             </Flex>
           </Flex>
           <Flex justify="space-between" my="sm" w="100%" direction="column">

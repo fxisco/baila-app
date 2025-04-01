@@ -15,6 +15,7 @@ import Teachers from "./pages/Teachers";
 import Login from "./pages/Login";
 import Students from "./pages/Students";
 import StudentPayments from "./pages/StudentPayments";
+import StudentPaymentsView from "./pages/StudentPaymentsView";
 import ServicesPayment from "./pages/ServicesPayment.jsx";
 import StudentGroups from "./pages/StudentGroups";
 import StudentAssists from "./pages/StudentAssists";
@@ -66,6 +67,10 @@ createRoot(document.getElementById("root")).render(
                 <Route
                   path="estudiantes/:id/pagos"
                   element={<StudentPayments />}
+                />
+                <Route
+                  path="estudiantes/:id/pagos/formulario/:paymentId?"
+                  element={<StudentPaymentsView />}
                 />
                 <Route
                   path="grupos/:id/asistencia"

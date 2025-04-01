@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Flex, TextInput, Skeleton, Button, MultiSelect } from "@mantine/core";
+import { useNavigate } from "react-router";
+import { Flex, TextInput, Skeleton, Button, MultiSelect, Breadcrumbs, Anchor } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { normalizeString } from "../helpers/strings";
 import { fetchStudent, updateStudent, getGroups } from "../helpers/api";
@@ -8,6 +9,7 @@ import { notifications } from "@mantine/notifications";
 import { getSuccessMessage, getErrorMessage } from "../helpers/strings";
 
 function StudentView() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [student, setStudent] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -92,6 +94,16 @@ function StudentView() {
           align="center"
           direction="column"
         >
+          <Flex justify="space-between" my="sm" w="100%">
+            <Breadcrumbs>
+              <Anchor onClick={() => navigate("/estudiantes")} underline="never">
+                Estudiantes
+              </Anchor>
+              {id && <Anchor underline="never">
+                {student?.firstName} {student?.lastName}
+              </Anchor>}
+            </Breadcrumbs>
+          </Flex>
           <Flex justify="space-between" my="sm" w="100%">
             <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
               <Skeleton visible={loading} flex={1}>
