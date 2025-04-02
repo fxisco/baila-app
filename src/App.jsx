@@ -9,6 +9,7 @@ import {
   IconUserStar,
   IconLogout,
   IconKey,
+  IconSettings,
 } from "@tabler/icons-react";
 
 function App() {
@@ -72,6 +73,13 @@ function App() {
             active={rootPath === "servicios"}
             onClick={() => handleNavigation("/servicios")}
             leftSection={<IconReceipt2 />}
+            fw="bolder"
+          />
+          <NavLink
+            label="Configuración"
+            active={rootPath === "configuracion"}
+            onClick={() => handleNavigation("/configuracion")}
+            leftSection={<IconSettings />}
             fw="bolder"
           />
           <NavLink

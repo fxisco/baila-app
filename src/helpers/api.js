@@ -24,6 +24,10 @@ export const createStudentPayment = async (id, data) => {
   return axios.put(BASE_URL + `estudiantes/${id}/pago`, data);
 }
 
+export const updateConfig = async (data) => {
+  return axios.put(BASE_URL + `configuraciones`, data);
+}
+
 export const createGroup = async (grupo) => {
   return axios.put(BASE_URL + `grupos`, grupo);
 }
@@ -42,6 +46,14 @@ export const searchStudent = async (search) => {
 
 export const fetchStudent = async (id) => {
   return axios.get(BASE_URL + `estudiantes/${id}`);
+}
+
+export const fetchConfig = async () => {
+  return axios.get(BASE_URL + `configuraciones`);
+}
+
+export const fetchRecents = async () => {
+  return axios.get(BASE_URL + `estudiantes/recientes`);
 }
 
 export const fetchPayment = async (id) => {
@@ -114,6 +126,10 @@ export const fetchGroupAttendance = async (id, data) => {
 
 export const deleteServicePayment = async (id) => {
   return axios.delete(BASE_URL + `servicios/pagos/${id}`);
+}
+
+export const deleteStudent = async (id) => {
+  return axios.delete(BASE_URL + `estudiantes/${id}`);
 }
 
 export const deleteStudentPayment = async (id) => {

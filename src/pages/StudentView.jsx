@@ -67,13 +67,13 @@ function StudentView() {
       const { error } = data;
 
       if (error) {
-        notifications.show(getErrorMessage("Error al actualizr el estudiante. Por favor intente de nuevo."))
+        notifications.show(getErrorMessage("Error al actualizar el estudiante. Por favor intente de nuevo."))
       } else {
         setOriginalStudent(student);
         notifications.show(getSuccessMessage("Estudiante actualizado correctamente."));
       }
     } catch {
-      notifications.show(getErrorMessage("Error al actualizr el estudiante. Por favor intente de nuevo."))
+      notifications.show(getErrorMessage("Error al actualizar el estudiante. Por favor intente de nuevo."))
     } finally {
       setLoadingUpdate(false);
     }
