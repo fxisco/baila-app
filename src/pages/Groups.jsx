@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Table, Flex, Button, Loader, List, Badge, SegmentedControl, Tooltip, ActionIcon } from "@mantine/core";
-import { IconPlus, IconListCheck } from "@tabler/icons-react";
+import { IconPlus, IconListCheck, IconReceipt2 } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { getGroups, getTeachers } from "../helpers/api";
@@ -82,6 +82,8 @@ function Groups() {
         onClick={() => navigate(`/grupo/${element._id}`)}
       >
         <Table.Td>{element.name}</Table.Td>
+        <Table.Td>{dayjs(element.startMonth).format('MMMM YYYY')}</Table.Td>
+        <Table.Td>{dayjs(element.endMonth).format('MMMM YYYY')}</Table.Td>
         <Table.Td>
           <List spacing="xs" size="sm" center>
             {Object.entries(element?.schedules || {}).map(([id, schedule]) => (
@@ -105,11 +107,22 @@ function Groups() {
               <ActionIcon
                 variant="subtle"
                 title="Pasar asistencia"
-                color="green"
+                color="blue"
                 radius="xl"
                 onClick={(e) => handleNavigation(e, `/grupos/${element._id}/asistencia`)}
               >
                 <IconListCheck />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Pagos" position="left">
+              <ActionIcon
+                variant="subtle"
+                title="Pagos"
+                color="green"
+                radius="xl"
+                onClick={(e) => handleNavigation(e, `/grupos/${element._id}/pagos`)}
+              >
+                <IconReceipt2 />
               </ActionIcon>
             </Tooltip>
           </Flex>
@@ -147,8 +160,10 @@ function Groups() {
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Nombre</Table.Th>
-            <Table.Th>Horario</Table.Th>
-            <Table.Th>Profesor</Table.Th>
+            <Table.Th>Fecha Inicio</Table.Th>
+            <Table.Th>Fecha Fin</Table.Th>
+            <Table.Th>Horarios</Table.Th>
+            <Table.Th>Profesor/es</Table.Th>
             <Table.Th>Acciones</Table.Th>
           </Table.Tr>
         </Table.Thead>

@@ -18,6 +18,7 @@ import {
   Anchor
 } from "@mantine/core";
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { MonthPickerInput } from "@mantine/dates";
 import { useNavigate } from "react-router";
 import { normalizeString } from "../helpers/strings";
 import { useDebouncedCallback } from '@mantine/hooks';
@@ -41,7 +42,7 @@ function GroupView() {
   const formattedTeachers = Object.keys(teachers).map((id) => ({ value: teachers[id]._id, label: `${teachers[id].firstName} ${teachers[id].lastName}` }))
   const hasSchedules = group?.schedules && Object.keys(group.schedules).length > 0;
   const allSchedulesFilled = Object.values(group?.schedules || {}).every(({ start, end }) => start && end);
-  const isFormValid = group?.name && group?.local && allSchedulesFilled && hasSchedules;
+  const isFormValid = group?.name && group?.startMonth && group?.endMonth && allSchedulesFilled && hasSchedules;
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -256,6 +257,34 @@ function GroupView() {
                     })
                   }
                   value={group?.teachers || []}
+                />
+              </Skeleton>
+            </Flex>
+          </Flex>
+          <Flex justify="space-between" my="sm" w="100%">
+            <Flex flex={1} gap="md" direction={{ base: "column", md: "row" }}>
+              <Skeleton visible={loading && !group} flex={1}>
+                <MonthPickerInput
+                  label="Mes Inicio"
+                  value={group?.startMonth ? new Date(group.startMonth) : null}
+                  onChange={(value) => {
+                    setGroup({
+                      ...group,
+                      startMonth: value.valueOf(),
+                    })
+                  }}
+                />
+              </Skeleton>
+              <Skeleton visible={loading && !group} flex={1}>
+                <MonthPickerInput
+                  label="Mes Fin"
+                  value={group?.endMonth ? new Date(group.endMonth) : null}
+                  onChange={(value) => {
+                    setGroup({
+                      ...group,
+                      endMonth: value.valueOf(),
+                    })
+                  }}
                 />
               </Skeleton>
             </Flex>

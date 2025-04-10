@@ -119,7 +119,7 @@ function Students() {
       setUpdateInProgress({ ...updateInProgress, [element._id]: true });
 
       try {
-        const { data } = await updateStudent(element._id, {...element, accepted});
+        const { data } = await updateStudent(element._id, {...element, accepted: true });
         const { error } = data;
 
         if (error) {

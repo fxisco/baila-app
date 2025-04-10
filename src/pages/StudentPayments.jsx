@@ -79,7 +79,7 @@ function StudentPayments() {
         <Table.Td>{element.type}</Table.Td>
         <Table.Td>
           {
-            element.type === 'Unico' ? dayjs(element.date).format('MMMM YYYY') : `${dayjs(element.startDate).format('MMMM YYYY')} - ${dayjs(element.endDate).format('MMMM YYYY')}`
+            element.type === 'Unico' ? dayjs(element.startDate).format('MMMM YYYY') : `${dayjs(element.startDate).format('MMMM YYYY')} - ${dayjs(element.endDate).format('MMMM YYYY')}`
           }
           </Table.Td>
         <Table.Td>

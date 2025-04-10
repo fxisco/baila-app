@@ -84,6 +84,10 @@ export const getGroups = async (payload) => {
   return axios.post(BASE_URL + `grupos`, payload);
 }
 
+export const getGroupPayments = async (id, payload) => {
+  return axios.post(BASE_URL + `grupos/${id}/pagos`, payload);
+}
+
 export const fetchGroup = async (id) => {
   return axios.get(BASE_URL + `grupos/${id}`);
 }

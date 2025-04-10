@@ -18,6 +18,7 @@ import StudentPayments from "./pages/StudentPayments";
 import StudentPaymentsView from "./pages/StudentPaymentsView";
 import ServicesPayment from "./pages/ServicesPayment.jsx";
 import StudentGroups from "./pages/StudentGroups";
+import GroupPayments from "./pages/GroupPayments";
 import StudentAssists from "./pages/StudentAssists";
 import StudentView from "./pages/StudentView";
 import Configuration from "./pages/Configuration";
@@ -78,6 +79,10 @@ createRoot(document.getElementById("root")).render(
                   <Route
                     path="grupos/:id/asistencia"
                     element={<GroupAttendance />}
+                  />
+                  <Route
+                    path="grupos/:id/pagos"
+                    element={<GroupPayments />}
                   />
                   <Route
                     path="servicios/:id/pagos/:paymentId?"
